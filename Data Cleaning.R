@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 crimedata <- read.csv("Crime_Data_2010_2017.csv")
 
 str(crimedata)
@@ -92,3 +93,13 @@ LA_holiday <- c(as.Date("2017-09-04"),
                 as.Date("2010-01-18"),
                 as.Date("2010-01-01"))
 
+=======
+library(dplyr)
+crimedata <- read.csv("Crime_Data_2010_2017.csv")
+crimedata<-tbl_df(crimedata)
+glimpse(crimedata)
+str(crimedata)
+
+crimedata$Date.Reported_C <- as.Date(crimedata$Date.Reported, format=("%m/%d/%Y"))
+crimedata$Date.Occurred_C <- as.Date(crimedata$Date.Occurred, format=("%m/%d/%Y"))
+>>>>>>> 79f68e4e96a073d1af8c2310a4f5a16e12010558

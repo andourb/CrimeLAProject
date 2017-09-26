@@ -1,0 +1,106 @@
+---
+title: "demographic analyse"
+author: "LiuXuyang"
+date: "9/26/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This scripts aims at analysing the demographic variables that we have and produce a better view on the places,timing for crime
+
+What has been done ?
+1)analyse on the distribution of victim age 
+2)hypothesis test on the mean age between male and female
+3)average age of victims based on race and sex
+4)top 10 premise of a crime scene
+5)time of a crime
+6)number of crimes in different areas
+
+TO DO :
+-some detailed plots
+-more analyses
+
+
+
+
+
+## import the cleaned data
+
+```{r library, echo=FALSE, warning=FALSE}
+library(dplyr)
+library(ggmap)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+```
+
+```{r}
+crime_data<-read.csv("data/clean_data.csv")
+
+```
+## analyse on the age and sex variable
+```{r}
+mean(crime_data$Victim.Age,na.rm=TRUE)
+sd(crime_data$Victim.Age,na.rm=TRUE)
+summary(crime_data$Victim.Age,na.rm=TRUE)
+
+female_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="F"]
+male_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="M"]
+summary(female_age,na.rm=TRUE)
+summary(male_age,na.rm=TRUE)
+ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE)) + geom_density()
+
+```
+
+#hypothesis test on the mean age between male and female
+```{r}
+
+t.test(female_age,male_age,alternative = "two.sided")  #mean age of victim is significantly smaller for female
+
+```
+
+##analyse on the average age of victims based on race and sex:
+#we can see that Hispanic has the largest number of victims and the average age is smallest
+
+```{r}
+crime_data%>%
+  group_by(Victim.Descent.Global,Victim.Sex)%>%
+  filter(!is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+         Victim.Sex=="F"|Victim.Sex=="M")%>%
+  summarise(avg_age=mean(Victim.Age),count=n())%>%
+  arrange(avg_age)
+```
+##time of a crime
+```{r}
+ggplot(crime_data,aes(x=Time.Occurred))+geom_density()
+
+```
+
+##top 10 premise of a crime scene
+```{r}
+crime_data%>%
+  group_by(Premise.Description)%>%
+  summarise(count=n())%>%
+  arrange(desc(count))%>%
+  head(10)
+
+```
+
+
+##number of crimes in different areas
+for example:77th Street is the most dangerous area for female while Hollenbeck is comparatively a safe area.
+```{r}
+crime_data%>%
+  group_by(Area.Name,Victim.Sex)%>%
+  filter(!is.na(Victim.Age),Victim.Sex=="F"|Victim.Sex=="M")%>%
+  summarise(avg_age=mean(Victim.Age),count=n())%>%
+  arrange(desc(count),avg_age)
+
+```

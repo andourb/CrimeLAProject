@@ -14,16 +14,16 @@ knitr::opts_chunk$set(echo = TRUE)
 This scripts aims at analysing the demographic variables that we have and produce a better view on the places,timing for crime
 
 What has been done ?
-1)analyse on the distribution of victim age 
-2)hypothesis test on the mean age between male and female
-3)average age of victims based on race and sex
-4)top 10 premise of a crime scene
-5)time of a crime
-6)number of crimes in different areas
+1) analyse on the distribution of victim age 
+2) hypothesis test on the mean age between male and female
+3) average age of victims based on race and sex
+4) top 10 premise of a crime scene
+5) time of a crime
+6) number of crimes in different areas
 
 TO DO :
--some detailed plots
--more analyses
+- some detailed plots
+- more analyses
 
 
 
@@ -59,15 +59,15 @@ ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE)) + geom_density()
 
 ```
 
-#hypothesis test on the mean age between male and female
+# hypothesis test on the mean age between male and female
 ```{r}
 
 t.test(female_age,male_age,alternative = "two.sided")  #mean age of victim is significantly smaller for female
 
 ```
 
-##analyse on the average age of victims based on race and sex:
-#we can see that Hispanic has the largest number of victims and the average age is smallest
+## analyse on the average age of victims based on race and sex:
+we can see that Hispanic has the largest number of victims and the average age is smallest
 
 ```{r}
 crime_data%>%
@@ -77,13 +77,13 @@ crime_data%>%
   summarise(avg_age=mean(Victim.Age),count=n())%>%
   arrange(avg_age)
 ```
-##time of a crime
+## time of a crime
 ```{r}
 ggplot(crime_data,aes(x=Time.Occurred))+geom_density()
 
 ```
 
-##top 10 premise of a crime scene
+## top 10 premise of a crime scene
 ```{r}
 crime_data%>%
   group_by(Premise.Description)%>%
@@ -94,7 +94,7 @@ crime_data%>%
 ```
 
 
-##number of crimes in different areas
+## number of crimes in different areas
 for example:77th Street is the most dangerous area for female while Hollenbeck is comparatively a safe area.
 ```{r}
 crime_data%>%

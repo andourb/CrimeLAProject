@@ -1,0 +1,128 @@
+---
+title: "Data Cleaning"
+author: "Andy"
+date: "September 26, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This scripts aims at cleaning the original dataset that we have and exporting a clean csv for our analysis.
+
+What has been done ?
+1) merging crime_data and code_data into one single dataset
+2) date formating and creation of column with day/month/year
+3) remove year 2017 because incomplete
+4) Label victim.descent and create a more global victim.descent.global with fewer categories
+5) columns longitude and latitude created from location 
+
+TO DO :
+ - Time format
+ - Column : time.occured - time.reported
+ 
+## Import and merge dataset
+
+```{r library, echo=FALSE, warning=FALSE}
+library(dplyr)
+library(ggmap)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+```
+
+```{r import, echo=TRUE}
+crime_data <- read.csv("data/Crime_Data_2010_2017.csv")
+code_data <- read.csv("data/MO_Codes.csv")
+
+crime_data <- merge(crime_data, code_data, by.x = "Crime.Code.1", by.y = "MO_Code", all.x = TRUE)
+```
+
+## Description of the dataset
+
+You can also embed plots, for example:
+
+```{r description, echo=FALSE}
+head(crime_data)
+str(crime_data)
+```
+
+## Data cleaning
+
+# Dates and Time
+```{r}
+# Convert date format
+
+crime_data$Date.Reported.C <- as.Date(crime_data$Date.Reported, format=("%m/%d/%Y"))
+crime_data$Date.Occurred.C <- as.Date(crime_data$Date.Occurred, format=("%m/%d/%Y"))
+
+crime_data <- separate(crime_data, col=Date.Occurred, into=c('Day.Occurred','Month.Occurred', "Year.Occurred"), sep="/")
+crime_data <- separate(crime_data, col=Date.Reported, into=c('Day.Reported','Month.Reported', "Year.Reported"), sep="/")
+
+```
+
+# Filter
+
+Remove year 2017 (incomplete)
+```{r filter_year}
+crime_data <- crime_data %>% filter(Year.Occurred < 2017)
+```
+
+# Labels
+
+```{r label}
+
+# Victim Descent more global
+crime_data[, "Victim.Descent.Global"] <- sapply(crime_data[, "Victim.Descent"], as.character)
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "W", "White")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "B", "Black")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "H", "Hispanic")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "A", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "C", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "J", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "K", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "F", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "C", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "L", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "D", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "V", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "Z", "Asian")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "O", "Others")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "G", "Others")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "X", "Others")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "I", "Others")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "P", "Pacific Islander")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "S", "Pacific Islander")
+crime_data$Victim.Descent.Global <- str_replace(crime_data$Victim.Descent.Global, "U", "Pacific Islander")
+crime_data[, "Victim.Descent.Global"] <- sapply(crime_data[, "Victim.Descent.Global"], as.factor)
+
+# Label Victim.Descent
+crime_data$Victim.Descent <- factor(crime_data[, "Victim.Descent"], levels = c("H", "W", "B", "O", "A", "C", "", "X", "F", "U", "K", "P", "G", "J", "I", "V", "Z", "S", "D", "L", "-"), labels = c("Hispanic", "White", "Black", "Other", "Other Asian", "Chinese", "", "Unknown", "Filipino", "Hawaiian", "Korean", "Pacific Islander", "Guamanian", "Japanese", "American Indian/Alaskan Native", "Vietnamese", "Asian Indian", "Samoan", "Cambodian", "Laotian", "-")) 
+
+```
+
+# Longitude and lattitude
+
+```{r}
+crime_data[, "Location"] <- sapply(crime_data[, "Location"], as.character)
+
+lat_func <- function(location) {return(as.numeric(str_sub(strsplit(location, split = ",")[[1]], 2, -1)[1]))}
+long_func <- function(location) {return(as.numeric(str_sub(strsplit(location, split = ",")[[1]], 1, -2)[2]))}
+
+
+crime_data$longitude <- sapply(crime_data$Location, long_func)
+crime_data$lattitude <- sapply(crime_data$Location, lat_func)
+```
+
+
+## Export dataset
+
+```{r}
+write.csv(crime_data, "data/clean_data.csv")
+```
+

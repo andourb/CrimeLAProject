@@ -20,10 +20,6 @@ What has been done ?
 4) Label victim.descent and create a more global victim.descent.global with fewer categories
 5) columns longitude and latitude created from location 
 
-TO DO :
- - Time format
- - Column : time.occured - time.reported
- 
 ## Import and merge dataset
 
 ```{r library, echo=FALSE, warning=FALSE}
@@ -58,12 +54,25 @@ str(crime_data)
 ```{r}
 # Convert date format
 
+time_func <- function(timestamp) {
+  timestamp <- as.character(timestamp)
+  while(nchar(timestamp) < 4) {
+    timestamp <- paste("0", timestamp, sep = '')
+    } 
+  return(timestamp)
+}
+
+crime_data$Time.Occurred <- sapply(crime_data$Time.Occurred, time_func)
+crime_data$Time.Occurred.C <- as.POSIXct(paste(as.character(crime_data$Date.Occurred), as.character(crime_data$Time.Occurred)), format="%m/%d/%Y %H%M")
+
 crime_data$Date.Reported.C <- as.Date(crime_data$Date.Reported, format=("%m/%d/%Y"))
 crime_data$Date.Occurred.C <- as.Date(crime_data$Date.Occurred, format=("%m/%d/%Y"))
 
 crime_data <- separate(crime_data, col=Date.Occurred, into=c('Day.Occurred','Month.Occurred', "Year.Occurred"), sep="/")
 crime_data <- separate(crime_data, col=Date.Reported, into=c('Day.Reported','Month.Reported', "Year.Reported"), sep="/")
 
+# Create column time_between_occurred_reported
+crime_data$Time.Between.Occured.Reported <- crime_data$Date.Reported.C - crime_data$Date.Occurred.C
 ```
 
 # Filter
@@ -124,5 +133,7 @@ crime_data$lattitude <- sapply(crime_data$Location, lat_func)
 
 ```{r}
 write.csv(crime_data, "data/clean_data.csv")
+```
+
 ```
 

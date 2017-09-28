@@ -1,0 +1,60 @@
+---
+title: "Area Distribution"
+author: "Andy"
+date: "September 26, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import dataset
+
+```{r library, echo=FALSE, warning=FALSE}
+library(dplyr)
+library(ggmap)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+```
+
+```{r import}
+crime_data <- read.csv('data/clean_data.csv')
+
+```
+
+## Top 10 Area
+
+
+```{r area, echo=FALSE}
+
+top10_crime <-  crime_data %>% select(Area.Name, crime_type) %>% group_by(crime_type, Area.Name) %>% summarise(count = n()) %>% top_n(5, wt =  count) 
+top10_crime
+
+```
+
+# Map
+
+```{r, fig.width=14, fig.height=19,}
+
+crime_data_coord <- crime_data %>% select(longitude, lattitude, Year.Occurred, crime_type) %>% filter(Year.Occurred == 2016)
+
+
+LAMap <- ggmap(
+  get_map("Los Angeles", zoom = 12), extent = "device", 
+  legend = "topright")
+
+LAMap +
+  stat_density2d(aes(x = longitude, y = lattitude, fill = ..level.., 
+                     alpha = ..level..),
+    size = 2, bins = 4, data = crime_data_coord, geom = "polygon", na.rm = TRUE) +
+  scale_fill_gradient("Crime\nDensity") +
+  scale_alpha(range = c(.4, .8), guide = FALSE) +
+  guides(fill = guide_colorbar(barwidth = 1, barheight = 6)) + facet_wrap( ~ crime_type)
+```
+

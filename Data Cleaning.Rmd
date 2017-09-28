@@ -22,7 +22,7 @@ What has been done ?
 
 ## Import and merge dataset
 
-```{r library, echo=FALSE, warning=FALSE}
+```{r library, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggmap)
 library(ggplot2)
@@ -131,74 +131,61 @@ crime_data$lattitude <- sapply(crime_data$Location, lat_func)
 # Rename Crime variables 
 
 ```{r}
-crime.type <- function(dataset, code1, code2, crimetype){
-  code1 = as.character(code1)
-  code2 = as.character(code2)
-  crimetype = as.character(crimetype)
-  for(i in 1:nrow(dataset)){
-    if (dataset[i, 'Crime.Code'] <= code2 & dataset[i, 'Crime.Code']>=code1){
-      dataset[i,'Crime.Type'] = crimetype
-    }
-  }
-  return(dataset)
-}
 
+# Create Code Type Data Dataframe
+crime_code <- 100:956
+crime_type <- c(rep("Homicide", 11), 
+                    rep("Others", 9), 
+                    rep("Rape", 11),
+                    rep("Others", 79),
+                    rep("Robbery", 6),
+                    rep("Others", 14),
+                    rep("Assault", 7),
+                    rep("Others", 13),
+                    rep("Gunshots Fired", 2),
+                    rep("Others", 58),
+                    rep("Burglary/Theft", 161),
+                    rep("Others", 9),
+                    rep("Vehicle Theft", 121),
+                    rep("Others", 21),
+                    rep("Battery", 6),
+                    rep("Others", 20),
+                    rep("Arson", 2),
+                    rep("Others", 4),
+                    rep("Counterfeit/Fraud", 9),
+                    rep("Burglary/Theft", 3),
+                    rep("Counterfeit/Fraud", 5),
+                    rep("Others", 69),
+                    rep("Vandalism", 6),
+                    rep("Others", 7),
+                    rep("Gunshots Fired",9),
+                    rep("Other Sexual Offences", 2),
+                    rep("Others", 41),
+                    rep("Other Sexual Offences", 6),
+                    rep("Others", 4),
+                    rep("Other Sexual Offences", 46),
+                    rep("Drug Offences", 5),
+                    rep("Others", 34),
+                    rep("Contempt of Court", 4),
+                    rep("Others", 6),
+                    rep("Kidnapping", 13),
+                    rep("Vandalism", 2),
+                    rep("Others", 7),
+                    rep("Other Sexual Offences", 2),
+                    rep("Others", 6),
+                    rep("Counterfeit/Fraud", 3),
+                    rep("Others", 8),
+                    rep("Counterfeit/Fraud", 2),
+                    rep("Others", 2),
+                    rep("Other Sexual Offences", 2))
 
-crime_data <- crime.type(crime_data, 100,110, 'Homicide')
-crime_data <- crime.type(crime_data, 120, 130, 'Rape')
-crime_data <- crime.type(crime_data, 210, 215, 'Robbery')
-crime_data <- crime.type(crime_data, 230, 236, 'Assault')
-crime_data <- crime.type(crime_data, 250, 251, 'Gunshots Fired')
-crime_data <- crime.type(crime_data, 310, 350, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 351, 380, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 381, 400, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 401, 420, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 421, 450, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 451, 470, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 480, 500, 'Vehicle Theft')
-crime_data <- crime.type(crime_data, 501, 530, 'Vehicle Theft')
-crime_data <- crime.type(crime_data, 531, 550, 'Vehicle Theft')
-crime_data <- crime.type(crime_data, 551, 570, 'Vehicle Theft')
-crime_data <- crime.type(crime_data, 571, 600, 'Vehicle Theft')
-crime_data <- crime.type(crime_data, 622, 627, 'Battery')
-#crime_data <- crime.type(crime_data, 480, 600, 'Vehicle Theft')
-crime_data <- crime.type(crime_data, 663, 665, 'Burglary/Theft')
-crime_data <- crime.type(crime_data, 648, 649, 'Arson')
-crime_data <- crime.type(crime_data, 654, 670, 'Counterfeit/Fraud')
-crime_data <- crime.type(crime_data, 740, 745, 'Vandalism')
-crime_data <- crime.type(crime_data, 753, 761, 'Gunshots Fired')
-crime_data <- crime.type(crime_data, 762, 763, 'Other Sexual Offences')
-crime_data <- crime.type(crime_data, 805, 810, 'Other Sexual Offences')
-crime_data <- crime.type(crime_data, 815, 850, 'Other Sexual Offences')
-crime_data <- crime.type(crime_data, 851, 860, 'Other Sexual Offences')
-crime_data <- crime.type(crime_data, 861, 865, 'Drug Offences')
-crime_data <- crime.type(crime_data, 900, 903, 'Contempt of Court')
-crime_data <- crime.type(crime_data, 910, 922, 'Kidnapping')
+crime_type_data <- data.frame(crime_code, crime_type)
 
-crime_data <- crime.type(crime_data, 940, 942, 'Counterfeit/Fraud')
-crime_data <- crime.type(crime_data, 932, 933, 'Other Sexual Offences')
-crime_data <- crime.type(crime_data, 955, 956, 'Other Sexual Offences')
-crime_data <- crime.type(crime_data, 951, 952, 'Counterfeit/Fraud')
-crime_data <- crime.type(crime_data, 923, 924, 'Vandalism')
-
-
-
-for(i in 1:nrow(crime_data)){
-    if (is.na(crime_data[i, 'Crime.Type'])){
-      crime_data[i,'Crime.Type'] = 'Others'
-    }
-  }
-
-
-crime_data[, "Crime.Type"] <- sapply(crime_data[, "Crime.Type"], as.factor)
-
-```{}
+crime_data <- merge(crime_data, crime_type_data, by.x = "Crime.Code", by.y = "crime_code", all.x = TRUE)
+```
 
 ## Export dataset
 
 ```{r}
 write.csv(crime_data, "data/clean_data.csv")
 ```
-
-```
-

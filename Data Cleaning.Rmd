@@ -34,9 +34,9 @@ library(stringr)
 
 ```{r import, echo=TRUE}
 crime_data <- read.csv("data/Crime_Data_2010_2017.csv")
-code_data <- read.csv("data/MO_Codes.csv")
+#code_data <- read.csv("data/MO_Codes.csv")
 
-crime_data <- merge(crime_data, code_data, by.x = "Crime.Code.1", by.y = "MO_Code", all.x = TRUE)
+#crime_data <- merge(crime_data, code_data, by.x = "Crime.Code.1", by.y = "MO_Code", all.x = TRUE)
 ```
 
 ## Description of the dataset

@@ -39,6 +39,7 @@ library(dplyr)
 library(lubridate)
 library(tidyr)
 library(stringr)
+library(scales)
 ```
 
 ```{r}
@@ -55,7 +56,8 @@ female_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="F"]
 male_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="M"]
 summary(female_age,na.rm=TRUE)
 summary(male_age,na.rm=TRUE)
-ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE)) + geom_density()
+
+ggplot(crime_data,aes(x=Victim.Age, fill = Victim.Sex, na.rm=TRUE)) + geom_bar()
 
 ```
 
@@ -65,6 +67,9 @@ ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE)) + geom_density()
 t.test(female_age,male_age,alternative = "two.sided")  #mean age of victim is significantly smaller for female
 
 ```
+
+the p-value is lower than 1%. Hence, we cannot accept the hypothesis that these means are equal.
+
 
 ## analyse on the average age of victims based on race and sex:
 we can see that Hispanic has the largest number of victims and the average age is smallest
@@ -79,7 +84,22 @@ crime_data%>%
 ```
 ## time of a crime
 ```{r}
-ggplot(crime_data,aes(x=Time.Occurred))+geom_density()
+time_crime_data <- crime_data %>% filter(Year.Occurred == 2016, Month.Occurred == 10)
+
+time_crime_data
+time_func <- function(timestamp) {
+  timestamp <- as.character(timestamp)
+  while(nchar(timestamp) < 4) {
+    timestamp <- paste("0", timestamp, sep = '')
+    } 
+  return(timestamp)
+}
+
+time_crime_data$Time.Occurred <- sapply(time_crime_data$Time.Occurred, time_func)
+time_crime_data$Time.Occurred <- as.POSIXct(as.character(time_crime_data$Time.Occurred), format="%H%M", origin = "2000-01-01")
+
+
+ggplot(time_crime_data,aes(x=Time.Occurred)) + geom_density() + scale_x_datetime(breaks = date_breaks("2 hour"), labels=date_format("%H:%M"), name = "Time of the day")
 
 ```
 

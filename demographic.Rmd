@@ -62,8 +62,8 @@ summary(female_age,na.rm=TRUE)
 summary(male_age,na.rm=TRUE)
 
 crime_data%>%
-  filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
-  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar()+facet_wrap(~Victim.Sex)
+  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
+  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar()+facet_wrap(~Victim.Descent.Global)
 
 ```
 
@@ -75,7 +75,15 @@ t.test(female_age,male_age,alternative = "two.sided")  #mean age of victim is si
 
 ```
 
+## proportion test on being white or black
+According to the population of LA,white people was 49.8% while black people was 9.6% of the population.
 
+```{r}
+crime_data1<-filter(crime_data,!crime_data$Victim.Descent=="")
+sum(crime_data1$Victim.Descent.Global=="White")/nrow(crime_data1)
+sum(crime_data1$Victim.Descent.Global=="Black")/nrow(crime_data1)
+
+```
 ## proportion of female/male victims among all victims of the same age
 ```{r}
 age<-crime_data%>%select(Victim.Age,Victim.Sex)%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
@@ -108,7 +116,7 @@ Pacific_Islander <- filter(demographic,  Victim.Descent.Global== "Pacific Island
 ")
 Others<-filter(demographic,  Victim.Descent.Global=="Others")
 
-ggplot(asian, aes(x = Victim.Sex, y = count, fill = as.factor(Victim.Age))) + 
+ggplot(Asian, aes(x = Victim.Sex, y = count, fill = as.factor(Victim.Age))) + 
   geom_bar(stat = 'identity', position = 'dodge')
 ggplot(Hispanic, aes(x = Victim.Sex, y = count, fill = as.factor(Victim.Age))) + 
   geom_bar(stat = 'identity', position = 'dodge')
@@ -118,7 +126,7 @@ ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) +
 ```
 
 ## analyse on the average age of victims based on race and sex:
-we can see that Hispanic has the largest number of victims and the average age is smallest
+we can see that Hispanic has the largest number of victims and the smallest average age 
 ```{r}
 avg_age<-crime_data%>%
   group_by(Victim.Descent.Global,Victim.Sex)%>%
@@ -129,6 +137,26 @@ avg_age<-crime_data%>%
 ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
        
 ```
+
+## type of crime and sex
+```{r}
+type<-crime_data%>%select(crime_type,Victim.Sex,Victim.Age)%>%
+  filter(!is.na(Victim.Age), Victim.Sex=="F"|Victim.Sex=="M")%>%
+  group_by(crime_type,Victim.Sex)%>%
+summarise(count=n())%>%
+  arrange(desc(count))%>%
+ggplot(type, aes(x =crime_type , y= count,fill=Victim.Sex)) + geom_bar(position = position_dodge(),stat = 'identity')  +
+  theme(axis.text = element_text(angle= 45, hjust = 1))+labs(x="crime type",y="number of victims")+scale_y_continuous(breaks=c(10000,20000,40000,80000,100000,200000,300000))
+
+
+
+
+```
+
+
+
+
+
 ## time of a crime
 ```{r}
 time_crime_data <- crime_data %>% filter(Year.Occurred == 2016, Month.Occurred == 10)

@@ -1,0 +1,237 @@
+---
+title: "Final Report"
+author: "Group B"
+date: "September 29, 2017"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+    df_print: tibble
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+\newpage
+
+Introduction
+=====================
+
+_Text here_
+
+Context
+-------------------
+_Text here_
+
+Theory
+-------------------
+_Text here_
+
+
+Data Description
+=====================
+
+Text here
+
+
+| Titre 1       |     Titre 2     |   Titre 3      |
+| ------------- | -------------   | ---------      |
+| Colonne       |     Colonne     |      Colonne   |
+| Alignée à     |      Alignée au |     Alignée à  |
+| Gauche        |      Centre     |      Droite    |
+
+
+Demographic
+=====================
+
+_Text here_
+
+Age and sex distribution
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+Ethnicity
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+
+Correlation between type of crime and age/sex/ethnicity (PLOT + hypothesis Testing !)
+-------------------
+
+Area distribution
+=====================
+
+_Text here_
+
+number of crimes in different areas per sex
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+Area distrubution per type of crime 
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+Correlation between area and type of crime (hypothesis testing)
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+Premise of a crime scene per sex
+-------------------
+
+
+for the main areas with highest crime rate - what are the main types of crime
+
+
+Time
+=====================
+
+_Text here_
+
+Day Time according to type of crime
+-------------------
+
+(ex : fraud in the day, rape a night, burglary during the day etc...)
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+Day Time according to sex
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+Correlation between time reported - time occured and type of crime
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+Correlation between time reported - time occured and case solved or not for a specific month
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+
+Public holidays impact
+-------------------
+
+```{r , echo=FALSE}
+# Code here
+```
+
+_Text here_
+
+_Hypothesis testing_
+
+```{r , echo=FALSE}
+# Code here
+```
+
+
+Prediction and logistic regression
+=====================
+
+
+
+Discussion
+=====================
+
+What results did you find?	
+-------------------
+
+Why is this interesting?
+-------------------
+
+Help LA police, predict the crime, prevention for the potential victims
+
+What would be the next steps?	
+-------------------
+
+
+

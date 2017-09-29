@@ -16,14 +16,17 @@ This scripts aims at analysing the demographic variables that we have and produc
 What has been done ?
 1) analyse on the distribution of victim age 
 2) hypothesis test on the mean age between male and female
-3) average age of victims based on race and sex
-4) top 10 premise of a crime scene
-5) time of a crime
-6) number of crimes in different areas
+3) proportion of female/male victims among all victims of the same age
+4) distribution of victim age between sex among different race
+5) analyse on the average age of victims based on race and sex:
+6) time of a crime
+7) top 10 premise of a crime scene
+8) number of crimes in different areas
+9) some detailed plots
 
 TO DO :
-- some detailed plots
-- more analyses
+
+- feel free to add more analyses if you have any ideas
 
 
 
@@ -40,6 +43,7 @@ library(lubridate)
 library(tidyr)
 library(stringr)
 library(scales)
+
 ```
 
 ```{r}
@@ -57,30 +61,73 @@ male_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="M"]
 summary(female_age,na.rm=TRUE)
 summary(male_age,na.rm=TRUE)
 
-ggplot(crime_data,aes(x=Victim.Age, fill = Victim.Sex, na.rm=TRUE)) + geom_bar()
+crime_data%>%
+  filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
+  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar()+facet_wrap(~Victim.Sex)
 
 ```
 
 # hypothesis test on the mean age between male and female
+the p-value is lower than 1%. Hence, we cannot accept the hypothesis that these means are equal.
 ```{r}
 
 t.test(female_age,male_age,alternative = "two.sided")  #mean age of victim is significantly smaller for female
 
 ```
 
-the p-value is lower than 1%. Hence, we cannot accept the hypothesis that these means are equal.
 
+## proportion of female/male victims among all victims of the same age
+```{r}
+age<-crime_data%>%select(Victim.Age,Victim.Sex)%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
+
+age<-age%>%group_by(Victim.Age,Victim.Sex)%>%summarise(count=length(Victim.Sex))%>%ungroup()%>%group_by(Victim.Age) %>% mutate(prop = count / sum(count)*100)
+female<-filter(age,Victim.Sex=="F")
+male<-filter(age,Victim.Sex=="M")
+ggplot(female,aes(x=Victim.Age,y=prop)) + geom_line() + labs(x="Victime Age",y="propotion of female victims")
+ggplot(male,aes(x=Victim.Age,y=prop)) + geom_line() + labs(x="Victime Age",y="propotion of male victims")
+
+```
+
+
+
+
+## distribution of victim age between sex among different race
+
+```{r}
+
+demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+ filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+         Victim.Sex=="F"|Victim.Sex=="M")%>%
+  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+  summarise(count = n())
+Asian <- filter(demographic,  Victim.Descent.Global== "Asian")
+Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
+Black<-filter(demographic,  Victim.Descent.Global== "Black")
+White<-filter(demographic,  Victim.Descent.Global== "White")
+Pacific_Islander <- filter(demographic,  Victim.Descent.Global== "Pacific Islander
+")
+Others<-filter(demographic,  Victim.Descent.Global=="Others")
+
+ggplot(asian, aes(x = Victim.Sex, y = count, fill = as.factor(Victim.Age))) + 
+  geom_bar(stat = 'identity', position = 'dodge')
+ggplot(Hispanic, aes(x = Victim.Sex, y = count, fill = as.factor(Victim.Age))) + 
+  geom_bar(stat = 'identity', position = 'dodge')
+ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
+  geom_bar(stat = 'identity', position = 'dodge')    #Obvious difference between male and female especially for ages around 25(young female)
+
+```
 
 ## analyse on the average age of victims based on race and sex:
 we can see that Hispanic has the largest number of victims and the average age is smallest
-
 ```{r}
-crime_data%>%
+avg_age<-crime_data%>%
   group_by(Victim.Descent.Global,Victim.Sex)%>%
   filter(!is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
          Victim.Sex=="F"|Victim.Sex=="M")%>%
   summarise(avg_age=mean(Victim.Age),count=n())%>%
   arrange(avg_age)
+ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
+       
 ```
 ## time of a crime
 ```{r}
@@ -105,11 +152,15 @@ ggplot(time_crime_data,aes(x=Time.Occurred)) + geom_density() + scale_x_datetime
 
 ## top 10 premise of a crime scene
 ```{r}
-crime_data%>%
-  group_by(Premise.Description)%>%
-  summarise(count=n())%>%
+place<-crime_data%>%select(Premise.Description,Victim.Sex,Victim.Age)%>%
+  filter(!is.na(Victim.Age), Victim.Sex=="F"|Victim.Sex=="M")%>%
+  group_by(Premise.Description,Victim.Sex)%>%
+summarise(count=n())%>%
   arrange(desc(count))%>%
-  head(10)
+head(10)
+ggplot(place, aes(x =Premise.Description , y= count,fill=Victim.Sex)) + geom_bar(position = position_dodge(),stat = 'identity')  +
+  theme(axis.text = element_text(angle= 45, hjust = 1))+labs(x="crime premises",y="number of victims")
+  
 
 ```
 
@@ -117,10 +168,15 @@ crime_data%>%
 ## number of crimes in different areas
 for example:77th Street is the most dangerous area for female while Hollenbeck is comparatively a safe area.
 ```{r}
-crime_data%>%
+area<-crime_data%>%
+  select(Area.Name,Victim.Sex,Victim.Age)%>%
+  filter(!is.na(Victim.Age), Victim.Sex=="F"|Victim.Sex=="M")%>%
   group_by(Area.Name,Victim.Sex)%>%
-  filter(!is.na(Victim.Age),Victim.Sex=="F"|Victim.Sex=="M")%>%
-  summarise(avg_age=mean(Victim.Age),count=n())%>%
-  arrange(desc(count),avg_age)
+summarise(count=n(),avg_age=mean(Victim.Age))%>%
+  arrange(desc(count))
+
+ggplot(area,aes(x =Area.Name , y= count,fill=Victim.Sex)) + geom_bar(position = position_dodge(),stat = 'identity')  +
+  theme(axis.text = element_text(angle= 45, hjust = 1))+labs(x="crime area",y="number of victims")
+  
 
 ```

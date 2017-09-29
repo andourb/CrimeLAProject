@@ -1,0 +1,91 @@
+---
+title: "PublicHolidays"
+author: "Sepp"
+date: "29 September, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#Import packages
+library(dplyr)
+library(ggmap)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+
+
+#Read Data
+#crime_data <- read.csv("data/clean_data.csv")
+
+```
+
+
+Effect of Public Holidays on crime Occurrence and Type.
+```{r}
+
+#Exploratory plot
+ggplot(crime_data,aes(x=Date.Occurred.C,color=public_holiday))+geom_bar()+scale_color_manual(values=c("red","blue"))
+
+crime_data%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(average))
+
+
+crime_data%>%
+  filter(Day.Occurred=="01" & Month.Occurred=="01") %>%
+  group_by(Date.Occurred.C) %>%
+  summarise(count=n())
+    
+crime_data%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01",TRUE,FALSE))%>%
+  summarise(Average.Report.Time=mean(Time.Between.Occured.Reported)) %>%
+  arrange(desc(Average.Report.Time))
+
+
+```
+Findings from the exploratory plot and tables:
+i.) The mean of # of crime in LA is higher on public holidays, but
+ii.) The number of crime is significantly higher on 1st of Jan in every year, and
+iii.) The length between occured time and reporting time tend to be longer on 1st Jan in every year;
+
+
+I cannot find information regarding this on the dataLA website, but it looks like they have coded crime incidents occured on other days as 1st Jan for some conditions.
+So should we exclude cases with reporting time lag for say i.)365 days/ ii. 15 days (which is the average)?
+
+
+As nature of Sundays is similar to holidays, I will include all Sundays as 'public holidays and Sundays' as the next step.
+
+
+```{R}
+# Please ignore the code below.
+crime_data%>%
+  filter(long.report.time==TRUE) %>%
+  group_by(Date.Occurred.C)%>%
+  summarise(count=n())%>%
+  arrange(desc(count))
+
+crime_data_holidays <- filter(crime_data,public_holiday==TRUE)
+
+crime_data_holidays <- mutate(crime_data_holidays,long.report.time=ifelse(Time.Between.Occured.Reported>365,TRUE,FALSE))
+
+
+crime_data_holidays%>%
+  filter(long.report.time==TRUE) %>%
+  group_by(Date.Occurred.C)%>%
+  summarise(count=n())%>%
+  arrange(desc(count))
+
+
+
+```
+

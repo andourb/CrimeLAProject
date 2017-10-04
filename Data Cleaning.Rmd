@@ -274,7 +274,13 @@ LA_holiday <- c(as.Date("2017-09-04"),
                 as.Date("2010-01-18"),
                 as.Date("2010-01-01"))
 
-crime_data <- mutate(crime_data,public_holiday=ifelse(Date.Occurred.C %in% LA_holiday,TRUE,FALSE))
+all_Sundays <- seq(from=date("2010-01-03"),to=date("2016-12-31"),by=7)
+
+Sunday_PH <- unique(append(LA_holiday,all_Sundays))
+
+crime_data <- mutate(crime_data,Sundays_public_holiday=ifelse(Date.Occurred.C %in% Sunday_PH,TRUE,FALSE))
+crime_data <- mutate(crime_data,Sundays=ifelse(Date.Occurred.C %in% all_Sundays,TRUE,FALSE))
+
                 
 ```
 

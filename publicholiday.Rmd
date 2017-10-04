@@ -38,7 +38,7 @@ crime_data%>%
   summarise(count=n()) %>%
   group_by(public_holiday) %>%
   summarise(average.crime.per.day=mean(count)) %>%
-  arrange(desc(average))
+  arrange(desc(average.crime.per.day))
 
 
 crime_data%>%
@@ -51,6 +51,12 @@ crime_data%>%
   summarise(Average.Report.Time=mean(Time.Between.Occured.Reported)) %>%
   arrange(desc(Average.Report.Time))
 
+
+crime_data%>%
+  filter(Day.Occurred!="01" & Month.Occurred!="01")%>%
+  summarise(Occured.Reported.Gap.SD=sd(Time.Between.Occured.Reported))
+
+#ggplot(crime_data[(crime_data$Day.Occurred!="01" & crime_data$Month.Occurred!="01"),],aes(x=Time.Between.Occured.Reported))+geom_bar()
 
 ```
 Findings from the exploratory plot and tables:
@@ -65,6 +71,132 @@ So should we exclude cases with reporting time lag for say i.)365 days/ ii. 15 d
 
 As nature of Sundays is similar to holidays, I will include all Sundays as 'public holidays and Sundays' as the next step.
 
+
+```{R}
+
+# included Sundays
+
+#Exploratory plot
+ggplot(crime_data,aes(x=Date.Occurred.C,color=Sundays_public_holiday))+geom_bar()+scale_color_manual(values=c("red","blue"))
+
+crime_data%>%
+  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(average.crime.per.day))
+
+
+
+# Only Sundays
+
+crime_data%>%
+  group_by(Sundays,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(average.crime.per.day))
+
+
+
+
+#### conclusion, not to group Sundays and PHs/// revised, to include PHs as PHs usually have less crime per day
+
+```
+
+
+```{R}
+#exclude lagged for more than 1 year
+
+
+
+
+crime_data$Jan1.exclude.365 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>365
+
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(crime_type,public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(public_holiday))
+
+#exclude lagged for more than 15 days (15 or 15+71 (1SD) or 15 + 141 (2SD?)
+
+crime_data$Jan1.exclude.15 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>15
+
+
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(crime_type,public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(public_holiday))
+
+
+
+```
+
+
+Included Sundays
+
+```{R}
+
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(Sundays_public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(crime_type,Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(Sundays_public_holiday))
+
+
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(Sundays_public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(crime_type,Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(Sundays_public_holiday))
+
+```
 
 ```{R}
 # Please ignore the code below.

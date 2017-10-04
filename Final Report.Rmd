@@ -53,39 +53,170 @@ _Text here_
 Age and sex distribution
 -------------------
 
-```{r , echo=FALSE}
-# Code here
+```{r library, echo=FALSE, warning=FALSE}
+library(dplyr)
+library(ggmap)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(tidyr)
+library(stringr)
+library(scales)
+
 ```
 
-_Text here_
+```{r , echo=FALSE}
+# Code here
+crime_data<-read.csv("data/clean_data.csv")
+##distribution of age among all victims
+summary(crime_data$Victim.Age,na.rm=TRUE)
+ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE))+geom_density()
+#can choose either one below(haven't decided yet)
+#plot option 1:
+crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
+ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
+#plot option 2:
+gender <- data.frame(female = female_age, male = male_age[1:length(female_age)])
+ggplot(data = gender) + geom_density(aes(x = female,col="female")) +
+  geom_density(aes(x = male,col="male"))
+```
+The summary of the victim age shows the youngest victim is only 10 years old and the oldest being 99 years old.The mean age of victim is around 36 years old.From the density plot of victim age,we can see that there are two peak points at 
+14 and 25 respectively.In addition,a histogram plot of the victim age of male and female is shown above.From the overlapping pattern,it is obvious that male are more likely to be a victim of crime at a young age(10-15 years old) or from 40 to 70 years old while female tend to be more in danger between around 15 to 35 years old,especially aged between 18 and 25.For example,at age 25,number of female victims are approximately 7500 higher than male victims.
 
+```{r}
+#summary of female age and male age respectively
+female_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="F"]
+male_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="M"]
+summary(female_age,na.rm=TRUE)
+summary(male_age,na.rm=TRUE)
+
+```
 _Hypothesis testing_
 ```{r , echo=FALSE}
 # Code here
-```
+t.test(female_age,male_age,alternative = "two.sided")
 
+```
 _Text here_
+From the summary of both male and female,the mean age of victim is lower for female(37.52 years old).We want to see whether this difference in mean age is due to random variation.A t-test is conducted to find out the results.Based on the t-test,we can conclude that there is strong evidence in rejecting the null hypothesis that the difference in means is 0.Thus,mean age of victim is significantly smaller for female.
+
+
+
 
 Ethnicity
 -------------------
 
 ```{r , echo=FALSE}
 # Code here
+#average age of victims based on ethnicity and gender(Hispanic has the lowerst avg age)
+avg_age<-crime_data%>%
+  group_by(Victim.Descent.Global,Victim.Sex)%>%
+  filter(!is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+         Victim.Sex=="F"|Victim.Sex=="M")%>%
+  summarise(avg_age=mean(Victim.Age),count=n())%>%
+  arrange(avg_age)
+#option1:barchart of mean age between different Ethnicity
+ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
+#option2:boxplot of age between different Ethnicity
+crime_data%>%
+  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
+  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=Victim.Descent.Global))+geom_boxplot()
+```
+From the bar chart of average victim age based on ethnicity and gender,Hispanic have the lowest average age among all ethnicity groups and female Hispanic is the lowest(around 33 years old).For Blacks and Hispanic,female victim tends to be younger on average while it is not that obvious for other ethinicty groups.We want to carry out hypothesis testing to determine whether it is indeed the case according to the plot.
+
+```{r}
+#number of vitims with different gender and ethnicity
+crime_data%>%
+  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
+  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar()+facet_wrap(~Victim.Descent.Global)+
+  labs(x="Victime Age",y="Number of victims")
+```
+From the above plot,it is obvious that Hispanic account for the largest part of victims and we would like to focus on Hispanic victims.
+
+
+```{r}
+#Thus focus on Hispanic
+demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+ filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+         Victim.Sex=="F"|Victim.Sex=="M")%>%
+  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+  summarise(count = n())
+
+Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
+
+ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
+  geom_bar(stat = 'identity', position = 'dodge')    
 ```
 
 _Text here_
-
+We now have some clue in the most likely victim of a crime:Hispanic young female aged aroung 25 years old.
 _Hypothesis testing_
+
+```{r}
+Hispanic_female1<-crime_data%>%filter(Victim.Descent.Global=="Hispanic")
+Hispanic_female<-Hispanic_female1$Victim.Age[Hispanic_female1$Victim.Sex=="F"]
+Hispanic_male1<-crime_data%>%filter(Victim.Descent.Global=="Hispanic")
+Hispanic_male<-Hispanic_male1$Victim.Age[Hispanic_male1$Victim.Sex=="M"]
+t.test(Hispanic_female,Hispanic_male,alternative = "two.sided")
+
+black_female1<-crime_data%>%filter(Victim.Descent.Global=="Black")
+black_female<-black_female1$Victim.Age[black_female1$Victim.Sex=="F"]
+black_male1<-crime_data%>%filter(Victim.Descent.Global=="Black")
+black_male<-black_male1$Victim.Age[black_male1$Victim.Sex=="M"]
+t.test(black_female,black_male,alternative = "two.sided")
+
+white_female1<-crime_data%>%filter(Victim.Descent.Global=="White")
+white_female<-white_female1$Victim.Age[white_female1$Victim.Sex=="F"]
+white_male1<-crime_data%>%filter(Victim.Descent.Global=="White")
+white_male<-white_male1$Victim.Age[white_male1$Victim.Sex=="M"]
+t.test(white_female,white_male,alternative = "two.sided")
+
+
+```
+From the t-tests above,female Hispanic victims are around 6 years younger on average than male Hispanic victims.For black people,female victims are around 3 years younger on average than male victims.However,as for white people,the average age is approximately the same(with a difference of between 0.02 to 0.25).
 
 ```{r , echo=FALSE}
 # Code here
-```
+#
+crime_data1<-filter(crime_data,!crime_data$Victim.Descent=="")
+sum(crime_data1$Victim.Descent.Global=="White")/nrow(crime_data1)
+sum(crime_data1$Victim.Descent.Global=="Black")/nrow(crime_data1)
+sum(crime_data1$Victim.Descent.Global=="Hispanic")/nrow(crime_data1)
 
-_Text here_
+```
+We did a proportion comparison with real population data.According to the population of LA,white people was 49.8% while black people was 9.6% of the population.While in the crime data,white people was 27.4% and black people was 17.8%.Thus,there are huge difference between the population proportion with the crime proportion. 
+
+
 
 
 Correlation between type of crime and age/sex/ethnicity (PLOT + hypothesis Testing !)
 -------------------
+
+
+relationship with type of crime
+-------------------
+```{r , echo=FALSE}
+#type of crime with gender
+type<-crime_data%>%select(crime_type,Victim.Sex,Victim.Age)%>%
+  filter(!is.na(Victim.Age), Victim.Sex=="F"|Victim.Sex=="M")%>%
+  group_by(crime_type,Victim.Sex)%>%
+summarise(count=n())%>%
+  arrange(desc(count))
+ggplot(type, aes(x =crime_type , y= count,fill=Victim.Sex)) + geom_bar(position = position_dodge(),stat = 'identity')  +
+  theme(axis.text = element_text(angle= 45, hjust = 1))+labs(x="crime type",y="number of victims")+scale_y_continuous(breaks=c(10000,20000,40000,80000,100000,200000,300000))
+```
+From the barplot on crime type above,burglary,battery,assault and vandalism are the most likely crime types.Burglary and assault tends to be aiming more on male while battery and other sexual offences have more female victims.
+
+```{r}
+#boxplot of victim age between different type of crimes and gender
+crime_data%>%
+  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
+  group_by(crime_type,Victim.Sex)%>%
+  
+  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
+
+```
+
 
 Area distribution
 =====================
@@ -232,6 +363,8 @@ Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	
 -------------------
+
+
 
 
 

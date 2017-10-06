@@ -198,6 +198,37 @@ crime_data%>%
 
 ```
 
+
+```{r}
+#two sample t-test - is there a difference between # of crime on public holidays/Sundays vs other days?
+
+Regular_day_crime <- crime_data%>%filter(Sundays_public_holiday==FALSE & Jan1.exclude.15==FALSE)%>%select(Date.Occurred.C)%>%
+  group_by(Date.Occurred.C)%>%summarise(count=n())
+
+Holiday_crime <- crime_data%>%filter(Sundays_public_holiday==TRUE & Jan1.exclude.15==FALSE)%>%select(Date.Occurred.C)%>%
+  group_by(Date.Occurred.C)%>%summarise(count=n())
+
+mean(Regular_day_crime$count); mean(Holiday_crime$count)
+
+t.test(Regular_day_crime$count,Holiday_crime$count,alternative = "greater")
+
+```
+
+```{r}
+#By crime type (Chi-sq-test?)
+crime_data_excluded_1Jan_15 <- crime_data%>%filter(Jan1.exclude.15==FALSE) %>% select(crime_type,Sundays_public_holiday,Date.Occurred.C) %>% group_by(crime_type,Sundays_public_holiday,Date.Occurred.C) %>% summarise (countperday=n()) %>% ungroup() %>% group_by(crime_type,Sundays_public_holiday) %>% summarise (average_per_day=mean(countperday))
+
+crime_data_excluded_1Jan_15
+
+PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays_public_holiday,crime_data_excluded_1Jan_15)
+PH_Crimetype_tbl
+
+# Most of crime type has less ocuuring rate on public holidays, but it likes look assault, battery, gunshots, rape and vandalism has a higher occuring rate in public holidays.
+
+```
+
+
+
 ```{R}
 # Please ignore the code below.
 crime_data%>%

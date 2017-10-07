@@ -13,9 +13,16 @@ output:
     df_print: tibble
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7, fig.align = "center") 
 ```
+
+```{r, include=FALSE}
+crime_data<-read.csv("data/clean_data.csv")
+```
+
 \newpage
 
 Introduction
@@ -53,7 +60,7 @@ _Text here_
 Age and sex distribution
 -------------------
 
-```{r library, echo=FALSE, warning=FALSE}
+```{r library, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggmap)
 library(ggplot2)
@@ -66,19 +73,16 @@ library(scales)
 ```
 
 ```{r , echo=FALSE}
-# Code here
-crime_data<-read.csv("data/clean_data.csv")
+
 ##distribution of age among all victims
 summary(crime_data$Victim.Age,na.rm=TRUE)
 ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE))+geom_density()
+
 #can choose either one below(haven't decided yet)
 #plot option 1:
 crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
 ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
-#plot option 2:
-gender <- data.frame(female = female_age, male = male_age[1:length(female_age)])
-ggplot(data = gender) + geom_density(aes(x = female,col="female")) +
-  geom_density(aes(x = male,col="male"))
+
 ```
 The summary of the victim age shows the youngest victim is only 10 years old and the oldest being 99 years old.The mean age of victim is around 36 years old.From the density plot of victim age,we can see that there are two peak points at 
 14 and 25 respectively.In addition,a histogram plot of the victim age of male and female is shown above.From the overlapping pattern,it is obvious that male are more likely to be a victim of crime at a young age(10-15 years old) or from 40 to 70 years old while female tend to be more in danger between around 15 to 35 years old,especially aged between 18 and 25.For example,at age 25,number of female victims are approximately 7500 higher than male victims.
@@ -107,7 +111,6 @@ Ethnicity
 -------------------
 
 ```{r , echo=FALSE}
-# Code here
 #average age of victims based on ethnicity and gender(Hispanic has the lowerst avg age)
 avg_age<-crime_data%>%
   group_by(Victim.Descent.Global,Victim.Sex)%>%
@@ -115,8 +118,10 @@ avg_age<-crime_data%>%
          Victim.Sex=="F"|Victim.Sex=="M")%>%
   summarise(avg_age=mean(Victim.Age),count=n())%>%
   arrange(avg_age)
+
 #option1:barchart of mean age between different Ethnicity
 ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
+
 #option2:boxplot of age between different Ethnicity
 crime_data%>%
   filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
@@ -332,16 +337,229 @@ _Hypothesis testing_
 Public holidays impact
 -------------------
 
-```{r , echo=FALSE}
-# Code here
+Effect of Public Holidays on crime Occurrence and Type.
+```{r}
+
+#Exploratory plot
+ggplot(crime_data,aes(x=Date.Occurred.C,color=public_holiday))+geom_bar()+scale_color_manual(values=c("red","blue"))
+
+crime_data%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(average.crime.per.day))
+
+
+crime_data%>%
+  filter(Day.Occurred=="01" & Month.Occurred=="01") %>%
+  group_by(Date.Occurred.C) %>%
+  summarise(count=n())
+    
+crime_data%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01",TRUE,FALSE))%>%
+  summarise(Average.Report.Time=mean(Time.Between.Occured.Reported)) %>%
+  arrange(desc(Average.Report.Time))
+
+
+crime_data%>%
+  filter(Day.Occurred!="01" & Month.Occurred!="01")%>%
+  summarise(Occured.Reported.Gap.SD=sd(Time.Between.Occured.Reported))
+
+#ggplot(crime_data[(crime_data$Day.Occurred!="01" & crime_data$Month.Occurred!="01"),],aes(x=Time.Between.Occured.Reported))+geom_bar()
+
+```
+Findings from the exploratory plot and tables:
+i.) The mean of # of crime in LA is higher on public holidays, but
+ii.) The number of crime is significantly higher on 1st of Jan in every year, and
+iii.) The length between occured time and reporting time tend to be longer on 1st Jan in every year;
+
+
+I cannot find information regarding this on the dataLA website, but it looks like they have coded crime incidents occured on other days as 1st Jan for some conditions.
+So should we exclude cases with reporting time lag for say i.)365 days/ ii. 15 days (which is the average)?
+
+
+As nature of Sundays is similar to holidays, I will include all Sundays as 'public holidays and Sundays' as the next step.
+
+
+```{R}
+
+# included Sundays
+
+#Exploratory plot
+ggplot(crime_data,aes(x=Date.Occurred.C,color=Sundays_public_holiday))+geom_bar()+scale_color_manual(values=c("red","blue"))
+
+crime_data%>%
+  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(average.crime.per.day))
+
+
+
+# Only Sundays
+
+crime_data%>%
+  group_by(Sundays,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(average.crime.per.day))
+
+
+
+
+#### conclusion, not to group Sundays and PHs/// revised, to include PHs as PHs usually have less crime per day
+
 ```
 
-_Text here_
 
-_Hypothesis testing_
+```{R}
+#exclude lagged for more than 1 year
 
-```{r , echo=FALSE}
-# Code here
+
+
+
+crime_data$Jan1.exclude.365 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>365
+
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(crime_type,public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(public_holiday))
+
+#exclude lagged for more than 15 days (15 or 15+71 (1SD) or 15 + 141 (2SD?)
+
+crime_data$Jan1.exclude.15 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>15
+
+
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(crime_type,public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(public_holiday))
+
+
+
+```
+
+
+Included Sundays
+
+```{R}
+
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(Sundays_public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.365==FALSE)%>%
+  group_by(crime_type,Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(Sundays_public_holiday))
+
+
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(desc(Sundays_public_holiday))
+
+#by crime type
+crime_data%>%
+  filter(Jan1.exclude.15==FALSE)%>%
+  group_by(crime_type,Sundays_public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(crime_type,Sundays_public_holiday) %>%
+  summarise(average.crime.per.day=mean(count)) %>%
+  arrange(crime_type,desc(Sundays_public_holiday))
+
+```
+
+
+```{r}
+#two sample t-test - is there a difference between # of crime on public holidays/Sundays vs other days?
+
+Regular_day_crime <- crime_data%>%filter(Sundays_public_holiday==FALSE & Jan1.exclude.15==FALSE)%>%select(Date.Occurred.C)%>%
+  group_by(Date.Occurred.C)%>%summarise(count=n())
+
+Holiday_crime <- crime_data%>%filter(Sundays_public_holiday==TRUE & Jan1.exclude.15==FALSE)%>%select(Date.Occurred.C)%>%
+  group_by(Date.Occurred.C)%>%summarise(count=n())
+
+mean(Regular_day_crime$count); mean(Holiday_crime$count)
+
+t.test(Regular_day_crime$count,Holiday_crime$count,alternative = "greater")
+
+```
+
+```{r}
+#By crime type (Chi-sq-test?)
+crime_data_excluded_1Jan_15 <- crime_data%>%filter(Jan1.exclude.15==FALSE) %>% select(crime_type,Sundays_public_holiday,Date.Occurred.C) %>% group_by(crime_type,Sundays_public_holiday,Date.Occurred.C) %>% summarise (countperday=n()) %>% ungroup() %>% group_by(crime_type,Sundays_public_holiday) %>% summarise (average_per_day=mean(countperday))
+
+crime_data_excluded_1Jan_15
+
+PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays_public_holiday,crime_data_excluded_1Jan_15)
+PH_Crimetype_tbl
+
+# Most of crime type has less ocuuring rate on public holidays, but it likes look assault, battery, gunshots, rape and vandalism has a higher occuring rate in public holidays.
+
+```
+
+
+
+```{R}
+# Please ignore the code below.
+crime_data%>%
+  filter(long.report.time==TRUE) %>%
+  group_by(Date.Occurred.C)%>%
+  summarise(count=n())%>%
+  arrange(desc(count))
+
+crime_data_holidays <- filter(crime_data,public_holiday==TRUE)
+
+crime_data_holidays <- mutate(crime_data_holidays,long.report.time=ifelse(Time.Between.Occured.Reported>365,TRUE,FALSE))
+
+
+crime_data_holidays%>%
+  filter(long.report.time==TRUE) %>%
+  group_by(Date.Occurred.C)%>%
+  summarise(count=n())%>%
+  arrange(desc(count))
+
+
+
 ```
 
 
@@ -363,7 +581,6 @@ Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	
 -------------------
-
 
 
 

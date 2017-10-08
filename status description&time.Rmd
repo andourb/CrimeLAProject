@@ -1,0 +1,51 @@
+---
+title: "status description&Time"
+author: "Jie"
+date: "2017/10/7"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+status<-sapply(crime_data$Status.Description,as.character)
+f1<-group_by(crime_data,Status.Description)%>%summarise(count=n())
+
+
+#categorize the Status Description in to 3 type: Arrested,invest cont and other
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Arrest"] <- "Arrested"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Arrest"] <- "Arrested"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Other"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Other"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="UNK"] <- "Other"
+ggplot(crime_data)+geom_bar(aes(x=crime_type))+facet_wrap(~Status.Description)+theme(axis.text = element_text(angle = 45,hjust = 1))
+
+
+```
+
+```{r}
+f2<-group_by(crime_data,Time.Between.Occured.Reported)%>%summarise(count=n())
+
+#there are too many numbers in the Time.Between.Occured.Reported(from 1 to 2800),in order to analyse its relationship with status description and crime type,I try to categorize them to 4 types using following for loop but it took a whole night and still didn't finish running.I guess we need another way to figure it out.
+for (i in 1:nrow(crime_data)){
+  if (crime_data[i,"Time.Between.Occured.Reported"]<=3){
+    crime_data[i,"Time.Between.Occured.Reported"]="less than 3 days"
+  }else if (crime_data[i,"Time.Between.Occured.Reported"]>3&&
+            crime_data[i,"Time.Between.Occured.Reported"]<=10){
+    crime_data[i,"Time.Between.Occured.Reported"]="3 days to 10 days"
+            }else if (crime_data[i,"Time.Between.Occured.Reported"]>10&&
+                      crime_data[i,"Time.Between.Occured.Reported"]<=15){
+              crime_data[i,"Time.Between.Occured.Reported"]="10 days to 15 days"
+            }else if (crime_data[i,"Time.Between.Occured.Reported"]>15){
+                        crime_data[i,"Time.Between.Occured.Reported"]="more than 15 days"
+                      }
+}
+
+```
+
+
+

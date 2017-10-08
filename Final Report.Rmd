@@ -28,12 +28,7 @@ crime_data<-read.csv("data/clean_data.csv")
 Introduction
 =====================
 
-Crime is always a hot topic in Los Angeles. With a considerably higher violent crime rate of 6.45 per 1000 residents in 2015, compared to US national median of 3.8 per 1000 residents (based on FBI crime data), L.A is amongst the most dangerous cities in US. According to Los Angeles Police Department(LAPD), from 2002 to 2012 the crime rate in city had declined in 10 consecutive years. However, in 2015, LAPD reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015.Officials have pointed a range of factors that resulted in the jump, including more gang violence and a growth of homeless people.
-With a high chance of 1 in 33 to become a victim of either violent or property crime in L.A, it is never too much to emphasize the importance of crime prevention and public safety. In order to find patterns of crime in L.A and come up with some useful suggestions accordingly in crime prevention, this paper looks into three main questions of various crime in L.A: who is more likely to be a victim; where is the accident-prone place in L.A and when the crime is most likely to occur. 
-The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. As this data is transcribed from original crime reports that are typed on paper and therefore there may be some inaccuracies within the data.
-
- 
-
+Crime is always a hot topic in Los Angeles. With a considerably higher violent crime rate of 6.45 per 1000 residents in 2015, compared to US national median of 3.8 per 1000 residents (based on FBI crime data), L.A is amongst the most dangerous cities in US. According to Los Angeles Police Department(LAPD), from 2002 to 2012 the crime rate in city had declined in 10 consecutive years. However, in 2015, LAPD reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015.Officials have pointed a range of factors that resulted in the jump, including more gang violence and a growth of homeless people. With a high chance of 1 in 33 to become a victim of either violent or property crime in L.A, it is never too much to emphasize the importance of crime prevention and public safety. In order to find patterns of crime in L.A and come up with some useful suggestions accordingly in crime prevention, this paper looks into three main questions of various crime in L.A: who is more likely to be a victim; where is the accident-prone place in L.A and when the crime is most likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. As this data is transcribed from original crime reports that are typed on paper and therefore there may be some inaccuracies within the data.
 
 Context
 -------------------
@@ -231,38 +226,75 @@ crime_data%>%
 Area distribution
 =====================
 
-_Text here_
+We have seen who are the victims of the crime, now let's focus on the location of these crimes. Of course, we can make the hypothesis that the location depends on the type of crime and on the victim.
 
-number of crimes in different areas per sex
+number of crimes in different areas
 -------------------
 
+First, we want to study the distribution of crime in the different areas.
+
 ```{r , echo=FALSE}
-# Code here
+top5_crime <-  crime_data %>% select(Area.Name, crime_type) %>% group_by(crime_type, Area.Name) %>% summarise(count = n()) %>% top_n(5, wt =  count) 
+top5_crime
+
+ggplot(crime_data, aes(x = crime_type)) + geom_bar() + facet_wrap(~ Area.Name) + theme(axis.text = element_text(angle= 60, hjust = 1))
 ```
 
-_Text here_
+From these graphs, we can see that the distribution of the type of crime is slightly similar in the different areas. 
 
 _Hypothesis testing_
 
-```{r , echo=FALSE}
-# Code here
+Let's conduct a X-squared test to test the hypothesis whether the crime area is independent of the type of a crime at .05 significance level.
+
+```{r}
+tbl = table(crime_data$Area.Name, crime_data$crime_type) 
+chisq.test(tbl)
 ```
+
+As the p-value is lower than the .05 significance level, we reject the null hypothesis that the crime area is independent of the type of a crime.
+
+Hence, let's delve deeper into the analysis to see the correlation between these two variables.
+
+
+
+Let's study more specificaly the distribution of crime between 77th Street and SouthWest.
+
+```{r}
+
+crime_data_77_SW <- crime_data %>% select(Area.Name, crime_type) %>% filter(Area.Name == 'Topanga' | Area.Name == 'Hollenbeck')
+crime_data_77_SW$Area.Name <- sapply(crime_data_77_SW$Area.Name, as.character)
+crime_data_77_SW$crime_type <- sapply(crime_data_77_SW$crime_type, as.character)
+test <- chisq.test(table(crime_data_77_SW$Area.Name, crime_data_77_SW$crime_type))
+table(crime_data_77_SW$Area.Name, crime_data_77_SW$crime_type)
+test
+```
+
+
+
+Another way to address the problem is to look at the crime density for different type of crime in Los Angeles.
+
 
 Area distrubution per type of crime 
 -------------------
 
-```{r , echo=FALSE}
-# Code here
+```{r, fig.width=7, fig.height=10}
+
+crime_data_coord <- crime_data %>% select(longitude, lattitude, Year.Occurred, crime_type) %>% filter(Year.Occurred == 2016)
+
+
+LAMap <- ggmap(
+  get_map("Los Angeles", zoom = 11), extent = "device", 
+  legend = "topright")
+
+LAMap +
+  stat_density2d(aes(x = longitude, y = lattitude, fill = ..level.., 
+                     alpha = ..level..),
+    size = 2, bins = 4, data = crime_data_coord, geom = "polygon", na.rm = TRUE) +
+  scale_fill_gradient("Crime\nDensity") +
+  scale_alpha(range = c(.4, .8), guide = FALSE) +
+  guides(fill = guide_colorbar(barwidth = 1, barheight = 6)) + facet_wrap( ~ crime_type)
 ```
 
-_Text here_
-Correlation between area and type of crime (hypothesis testing)
-
-_Hypothesis testing_
-
-```{r , echo=FALSE}
-# Code here
-```
 
 Premise of a crime scene per sex
 -------------------
@@ -466,16 +498,53 @@ crime_data_excluded_1Jan_15
 
 PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays_public_holiday,crime_data_excluded_1Jan_15)
 PH_Crimetype_tbl
-
-# Most of crime type has less ocuuring rate on public holidays, but it likes look assault, battery, gunshots, rape and vandalism has a higher occuring rate in public holidays.
-
 ```
 
+Most of crime type has less ocuuring rate on public holidays, but it likes look assault, battery, gunshots, rape and vandalism has a higher occuring rate in public holidays.
 
 
 Prediction and logistic regression
 =====================
 
+_Data Cleaning_
+
+```{r}
+# Remove missing values for victim age and premise code
+crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.character)
+crime_data_NA <- crime_data[!is.na(crime_data$Victim.Age) & !is.na(crime_data$Premise.Code) & (crime_data$Victim.Sex == "F" | crime_data$Victim.Sex == "M"),]
+crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.factor)
+
+```
+
+_Training set and learning set_
+
+```{r}
+train_data <- crime_data_NA[crime_data_NA$Year.Occurred != 2016, ]
+test_data <- crime_data_NA[crime_data_NA$Year.Occurred == 2016, ]
+```
+
+_Predict the type of crime_
+
+First, we try to predict the type of crime according to different parameters such as the age of the potential victim, the sex, the ethnicity and the area
+
+```{r}
+#Multinomial Logistic Regression
+
+library("nnet")
+library(pscl)
+
+model <- multinom(Area.Name ~ Victim.Age + Victim.Sex + Victim.Descent +  crime_type, data = test_data)
+
+summary <- summary(model)
+
+pR2(model)
+
+test_data_predict <- test_data %>% select(Victim.Age, Victim.Sex, crime_type)
+predict_area <- predict(model, test_data_predict, type = 'class')
+
+sum(test_data$Area.Name == predict_area)/length(predict_area)
+
+```
 
 
 Discussion

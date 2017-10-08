@@ -73,6 +73,15 @@ crime_data <- separate(crime_data, col=Date.Reported, into=c('Day.Reported','Mon
 
 # Create column time_between_occurred_reported
 crime_data$Time.Between.Occured.Reported <- crime_data$Date.Reported.C - crime_data$Date.Occurred.C
+
+time_func <- function(numb){
+  if(numb <3){return("less than 3 days")
+  } else if(numb >=3 & numb < 10 ){return("3 days to 10 days")
+    } else if(numb >=10 & numb < 15 ){return("10 days to 15 days")
+    } else if(numb >= 15) {return("more than 15 days")}
+}
+
+crime_data$Time.Between.Occured.Reported.Global = sapply(crime_data$Time.Between.Occured.Reported, time_func)
 ```
 
 # Filter

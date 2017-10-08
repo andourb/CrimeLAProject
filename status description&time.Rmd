@@ -30,22 +30,15 @@ ggplot(crime_data)+geom_bar(aes(x=crime_type))+facet_wrap(~Status.Description)+t
 ```{r}
 f2<-group_by(crime_data,Time.Between.Occured.Reported)%>%summarise(count=n())
 
-#there are too many numbers in the Time.Between.Occured.Reported(from 1 to 2800),in order to analyse its relationship with status description and crime type,I try to categorize them to 4 types using following for loop but it took a whole night and still didn't finish running.I guess we need another way to figure it out.
-for (i in 1:nrow(crime_data)){
-  if (crime_data[i,"Time.Between.Occured.Reported"]<=3){
-    crime_data[i,"Time.Between.Occured.Reported"]="less than 3 days"
-  }else if (crime_data[i,"Time.Between.Occured.Reported"]>3&&
-            crime_data[i,"Time.Between.Occured.Reported"]<=10){
-    crime_data[i,"Time.Between.Occured.Reported"]="3 days to 10 days"
-            }else if (crime_data[i,"Time.Between.Occured.Reported"]>10&&
-                      crime_data[i,"Time.Between.Occured.Reported"]<=15){
-              crime_data[i,"Time.Between.Occured.Reported"]="10 days to 15 days"
-            }else if (crime_data[i,"Time.Between.Occured.Reported"]>15){
-                        crime_data[i,"Time.Between.Occured.Reported"]="more than 15 days"
-                      }
+
+time_func <- function(numb){
+  if(numb <3){return("less than 3 days")
+  } else if(numb >=3 & numb < 10 ){return("3 days to 10 days")
+    } else if(numb >=10 & numb < 15 ){return("10 days to 15 days")
+    } else if(numb >= 15) {return("more than 15 days")}
 }
 
+crime_data$Time.Between.Occured.Reported.Global = sapply(crime_data$Time.Between.Occured.Reported, time_func)
 ```
-
 
 

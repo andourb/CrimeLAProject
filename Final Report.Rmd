@@ -63,8 +63,7 @@ The geographical category contains variables relating to the geographical occurr
 
 | Variable            |    Type     |   Description      |
 | -------------       | ------------- | :-------------------------------------------------      |
-| Area.ID             |  int    |  The LAPD has 21 Community Police Stations referred to as Geographic Areas within the department. These Geographic Areas are sequentially numbered from 1-21.
- |
+| Area.ID             |  int    |  The LAPD has 21 Community Police Stations referred to as Geographic Areas within the department. These Geographic Areas are sequentially numbered from 1-21. |
 | Area.Name           |  fctr    |   The 21 Geographic Areas or Patrol Divisions are also given a name designation that references a landmark or the surrounding community that it is responsible for. For example 77th Street Division is located at the intersection of South Broadway and 77th Street, serving neighborhoods in South Los Angeles.   |
 | Reporting.District  |   int   |  A four-digit code that represents a sub-area within a Geographic Area. All crime records reference the "RD" that it occurred in for statistical comparisons.    |
 | Premise.Code        | dbl     |  The type of structure, vehicle, or location where the crime took place.    |

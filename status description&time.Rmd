@@ -10,25 +10,32 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## R Markdown
+```{r}
+clean_data <- read.csv("data/clean_data.csv")
+```
 
 ```{r}
+#crime_type&crime solved or not
 status<-sapply(crime_data$Status.Description,as.character)
-f1<-group_by(crime_data,Status.Description)%>%summarise(count=n())
+f1<-group_by(clean_data,Status.Description)%>%summarise(count=n())
 
 
 #categorize the Status Description in to 3 type: Arrested,invest cont and other
-levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Arrest"] <- "Arrested"
-levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Arrest"] <- "Arrested"
-levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Other"] <- "Other"
-levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Other"] <- "Other"
-levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="UNK"] <- "Other"
-ggplot(crime_data)+geom_bar(aes(x=crime_type))+facet_wrap(~Status.Description)+theme(axis.text = element_text(angle = 45,hjust = 1))
-
+levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Adult Arrest"] <- "Arrested"
+levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Juv Arrest"] <- "Arrested"
+levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Juv Other"] <- "Other"
+levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Adult Other"] <- "Other"
+levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="UNK"] <- "Other"
 
 ```
 
 ```{r}
-f2<-group_by(crime_data,Time.Between.Occured.Reported)%>%summarise(count=n())
+ggplot(clean_data)+geom_bar(aes(x=crime_type,fill=Status.Description),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+We can see from the graph that of all different types of crime,Homicide has the highest clear-up rate,which is not surprising as the police departments around the world always attach more emphasis and put more energy in Homicide cases,and LAPD,according to the plot,is not an exception.Arson,burglary and vihecle theft have the three lowest detection rate,which may result from the lack of security cameras in streets in L.A or the little attention paid on these cases.Generally speaking, the cases that invovle physical attack,or so called violent crimes,like assault,battery, have higher probability to be solved while the property crimes are less likely to be solved in L.A.
+```{r}
+
+f2<-group_by(clean_data,Time.Between.Occured.Reported.Global)%>%summarise(count=n())
 
 
 time_func <- function(numb){
@@ -38,7 +45,67 @@ time_func <- function(numb){
     } else if(numb >= 15) {return("more than 15 days")}
 }
 
-crime_data$Time.Between.Occured.Reported.Global = sapply(crime_data$Time.Between.Occured.Reported, time_func)
+clean_data$Time.Between.Occured.Reported.Global = sapply(clean_data$Time.Between.Occured.Reported, time_func)
 ```
 
+```{r}
+#Time between occurred and reported & crime solved or not
+ggplot(clean_data)+geom_bar(aes(x=Time.Between.Occured.Reported.Global,fill=Status.Description),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+```{r}
+Time_status<-clean_data%>%select(Time.Between.Occured.Reported.Global,Status.Description)%>%group_by(Time.Between.Occured.Reported.Global,Status.Description)%>%summarise(count=n()) 
+Time_st121<-clean_data%>%select(Time.Between.Occured.Reported.Global)%>%group_by(Time.Between.Occured.Reported.Global)%>%summarise(count=n()) 
+#t test for the proportion of clear up rate in each range of time btw occ and rep
+ prop.test(c(143739,7474,1448,8042),c(1108635,148010,31711,144374))
+```
+As p value in the proportion test is smaller than 0.05, we know that clear-up rate of cases reported in less than 3 days is significantly higher than the that with longer report time,which is consistent with the intuitive findings according to the graph.This finding tell us that the the quicker victims report, the more likely police to solve the cases.
+```{r}
+#Time between occurred and reported & crime type
+ggplot(clean_data)+geom_bar(aes(x=crime_type,fill=Time.Between.Occured.Reported.Global),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+It's shown from the graph that people usually react quickly to physical attack such as homicide,gunshots,assault.It's not surprising that victims report much later on fraud,rape and other sexual offences,while it's quite hard to explain that why there is a delay in reporting arson cases.
 
+Based on the above analysis,we learn that people report quicker on physical injury cases and police officers take there cases more seriously,leading to a higher probability of sovling the cases.
+
+```{r}
+
+
+#categorize the ocurred time,using the original dataset and merge it into clean data!
+a <- read.csv("data/Crime_Data_2010_2017.csv")
+
+b <- separate(a, col=Date.Occurred, 
+                       into=c('Day.Occurred','Month.Occurred', "Year.Occurred"), sep="/")
+original_data<-b%>% filter(Year.Occurred < 2017)
+
+time_func2 <- function(numb){
+  if(numb >=700 & numb<=1200){return("7am to noon")
+  } else if(numb >=1200 & numb < 1800 ){return("noon to 6pm")
+  } else if(numb >=1800 & numb <2400 ){return("6pm to midnight")
+  } else if(numb >= 0 & numb<700) {return("midnight to 7am")}
+}
+
+original_data$Time.Occurred.Cate= sapply(original_data$Time.Occurred, time_func2)
+Time_data<-select(original_data,DR.Number,Time.Occurred.Cate)
+clean_data <- merge(clean_data, Time_data, by= "DR.Number",all= TRUE)
+```
+
+```{r}
+#time and crime type
+ggplot(clean_data)+geom_bar(aes(x=crime_type))+facet_wrap(~Time.Occurred.Cate)+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+```{r}
+ggplot(clean_data)+geom_bar(aes(x=crime_type,fill=Time.Occurred.Cate),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+
+```{r}
+#Time&sex
+Time_sex<-clean_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
+
+ggplot(Time_sex)+geom_bar(aes(x=Victim.Sex,fill=Time.Occurred.Cate),position="fill")
+```
+From the graph, there is no significant difference between the probobilities of males and females being a victim in a specific time during a day. So we use prop.test to find that if women are more likely to be attacked during night(6pm-7am).
+```{r}
+sex_time<-clean_data%>%select(Victim.Sex,Time.Occurred.Cate)%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%group_by(Victim.Sex,Time.Occurred.Cate)%>%summarise(count=n()) 
+prop.test(c(277432,324646),c(614481,670576))
+```
+The P value is smaller than 0.05,which implies that there is a siginificant difference of the proportions of cases occurred during night between men and women,and it's surprising that actually men are more likely to be victims during night.A possible reason behind this is that women are more tend to stay at home during night for the safety。

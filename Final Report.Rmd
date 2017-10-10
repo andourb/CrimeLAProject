@@ -42,14 +42,111 @@ _Text here_
 Data Description
 =====================
 
-Text here
+The dataset contains information on crime incidents in Los Angeles. The source description (LAPD) states that the dataset may have some inaccuracies due to information being transferred from original crime statements that are typed on paper. As crime data contains sensitive personal information, fields that contain address information are only provided to the nearest hundred block. The dataset includes crime data from 2010 through September 2017.
+
+Two separate csv files are provided with âCrime_Data_2010_2017â containing the main data and MO_Codes containing the description of MO codes that are included in the crime data for classification. 
+The dataset is made up of 1.584.316 observations and 26 variables. To structure the variables, we split them into four groups: demographic, geographic, crime and time type variables. Demographic category consists of the victimâs age, sex and descent. The type of variables and a detailed description can be found in the table below: 
+
+:Demographics
+
+| Variable      |    Type     |   Description      |
+| ------------- | ----------- | :---------------------------------------------------      |
+| Victim.Age    |     dbl     |      Two character numeric   |
+| Victim.Sex    |    fctr     |     F - Female M - Male X - Unknown  |
+|Victim.Descent |    fctr     |      Descent Code: A - Other Asian B - Black C - Chinese D - Cambodian F - Filipino G - Guamanian H - Hispanic/Latin/Mexican I - American Indian/Alaskan Native J - Japanese K - Korean L - Laotian O - Other P - Pacific Islander S - Samoan U - Hawaiian V - Vietnamese W - White X - Unknown Z - Asian Indian    |
 
 
-| Titre 1       |     Titre 2     |   Titre 3      |
-| ------------- | -------------   | ---------      |
-| Colonne       |     Colonne     |      Colonne   |
-| Alignée à     |      Alignée au |     Alignée à  |
-| Gauche        |      Centre     |      Droite    |
+
+The geographical category contains variables relating to the geographical occurrence of crime and reporting of crimes. Variables include the area ID, the name of the area, the district reporting the crime, the premise code, a premise description, the address, the cross street of rounded address and the location where the crime occurred. The type of variables and a detailed description can be found in the table below: 
+
+:Geographic
+
+| Variable            |    Type     |   Description      |
+| -------------       | ------------- | :-------------------------------------------------      |
+| Area.ID             |  int    |  The LAPD has 21 Community Police Stations referred to as Geographic Areas within the department. These Geographic Areas are sequentially numbered from 1-21.
+ |
+| Area.Name           |  fctr    |   The 21 Geographic Areas or Patrol Divisions are also given a name designation that references a landmark or the surrounding community that it is responsible for. For example 77th Street Division is located at the intersection of South Broadway and 77th Street, serving neighborhoods in South Los Angeles.   |
+| Reporting.District  |   int   |  A four-digit code that represents a sub-area within a Geographic Area. All crime records reference the "RD" that it occurred in for statistical comparisons.    |
+| Premise.Code        | dbl     |  The type of structure, vehicle, or location where the crime took place.    |
+| Premise.Description | fctr     |  Defines the Premise Code provided    |
+| Address             |   fctr   |  Street address of crime incident rounded to the nearest hundred block to maintain anonymity.    |
+| Cross.Street  |  fctr   | Cross Street of rounded Address.  |
+| Location      |   fctr   |   The location where the crime incident occurred. Actual address is omitted for confidentiality. XY coordinates reflect the nearest 100 block.   |
+             
+
+The crime category contains all variables that describe the incidents of crime in more detail such as the type of crime, the weapons used or the current status of the crime. The variables we assorted to this category include the number of the crime on record, the weapons used and their description, the status of the crime (code and description), then crime codes and their description as well as the modus operandi associated with the suspect in commission of the crime.
+
+:Crime
+
+| Variable       |    Type     |   Description      |
+| ------------- | -------------   | :------------------------------------------------------------------------      |
+|  DR.Number        |      int   |    Division of Records Number: Official file number made up of a 2 digit year, area ID, and 5 digits       |
+|  Weapon.Used.Code |     dbl    |   The type of weapon used in the crime.        |
+|  Weapon.Description|  fctr     |    Defines the Weapon Used Code provided.       |
+|  Status.Code      |   fctr     |    Status of the case. (IC is the default)       |
+|  Status.Description|    fctr   |   Defines the Status Code provided.        |
+|  Crime.Code.1     |    fctr    |    Indicates the crime committed. Crime Code 1 is the primary and most serious one. Crime Code 2, 3, and 4 are respectively less serious offenses. Lower crime class numbers are more serious.      |
+|  Crime.Code.2     |    fctr    |  May contain a code for an additional crime, less serious than Crime Code 1.      |
+|  Crime.Code.3     |    fctr    |    May contain a code for an additional crime, less serious than Crime Code 1.       |
+|  Crime.Code.4     |    fctr    | May contain a code for an additional crime, less serious than Crime Code 1.          |
+|  Crime.Code       |    int     |     Indicates the crime committed. (Same as Crime Code 1)      |
+|  Crime.Code.Description|  fctr |   Defines the Crime Code provided.        |
+|  MO.Codes         |   fctr     |     Modus Operandi: Activities associated with the suspect in commission of the crime.       |
+
+
+
+The final category groups all variables related to time. It contains a variable that contains the reported date, the date and time occurrence.
+
+:Time
+
+| Variable      |    Type         |   Description  |
+| ------------- | -------------   | :------------------------     |
+| Date.Reported |     fctr     |   MM/DD/YYYY   |
+| Date.Occurred |    fctr    |   MM/DD/YYYY   |
+| Time.Occurred |      int     |    In 24 hour military time.   |
+
+
+
+Data Cleaning Description
+-------------------
+As the data is provided in two different csv files. The first step that we took was to merge the crime_data and code_data into one single dataset. Then we looked at the date columns (date occured and date reported) and reformated each date to three new columns. Thus creating a new colum for the day occured, month occured and year occured as well as day reported, month reported and year reported. 
+For the completeness of full information on every year, we have omitted data from the year 2017 and will focus on the data from 2010 to 2016 included. 
+
+In order to make an interesting analysis we wanted to work with the information on victim descent. The abbreviations for victim descent in the original dataset, however, made analysis a little impractical as they weren't intuitively understandable (e.g. "D" standing for "Cambodian"). This is why we labeled the descent variables with the full description. (e.g. "W" being "White" and "D" being "Cambodian"). This led to ddd categories of descent: 
+
+:Victim Descent
+
+| Victim Descent Original  |   Victim Descent New  |
+| ------------- | :------------------------     |
+| H  |     Hispanic     | 
+| W  |   White       | 
+| B  |    Black      | 
+| O  |   Other       | 
+| A  |   Other Asian       | 
+| C  |     Chinese     | 
+| ' '  |          | 
+| X  |    Unknown      | 
+| F  |    Filipino      | 
+| U  |   Hawaiian       | 
+| K  |    Korean      | 
+| P  |   Pacific Islander       | 
+| G  |    Guamanian      | 
+| J  |   Japanese       | 
+| I  |    American Indian/Alaskan Native      | 
+| V  |   Vietnamese       | 
+| Z  |    Asian Indian      | 
+| S  |    Samoan      | 
+| D  |    Cambodian      | 
+| L  |    Laotian      | 
+| -  |    -      | 
+
+As there were some very specific subcategories for America (such as Alaskan Native)  we also added an additional more global colum on victim descent to be able to work with both the more detailed descent information and the more global descent variables. We reduced the global descent column to contain six groups(White, Black, Hispanic, Other, Asian and Pacific.  
+
+In order to simplify the mapping of location information, we also extracted longitude and latitude from the location column and created additional, separate columns for longitude and latitude. 
+
+The data covers the 21 different areas of Los Angeles and categorizes 135 different types of crimes.
+--> renamed crime variables 
+
 
 
 Demographic

@@ -108,7 +108,26 @@ The final category groups all variables related to time. It contains a variable 
 | Date.Occurred |    fctr    |   MM/DD/YYYY   |
 | Time.Occurred |      int     |    In 24 hour military time.   |
 
+:Strengths and Weaknesses of Dataset
 
+Strengths:
+
+1. Large number of observations 
+
+The dataset is comprehensive and documents criminal activities in L.A. from 2010 to September 2017. The large number of observations means that our analysis will be more robust and enable us to more accurately make predictions on future criminal activties. 
+
+2. Many variables regarding each criminal offence were collected and documented  
+
+We can conduct analysis on different areas with respect to crime in L.A with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A. 
+
+Weaknesses:
+1. Lack of socio-economic information
+
+While the dataset was comprehensive, it did not contain information on the socio-economic status of victims or perpetrators of crimes. Having such information will allow us to make more interesting inferences on likely victims of crime and also the type of crime committed. It is highly likely that socio-economic information will be as powerful as demographics, if not more powerful, in predicting criminal activities. 
+
+2. Lack of proper classification for different types of crime
+
+The classification of types of crime in the dataset was messy and was not conducive for analysis, making it difficult to study the correlation between types of crime being committed and other variables such as area and demographics. This is because the crime description in the original dataset differs even for crimes that are broadly similar in nature. We thus have to go through the dataset and make classifications that are logical and at the same time, conducive for analysis. 
 
 Data Cleaning Description
 =========================

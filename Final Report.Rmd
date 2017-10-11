@@ -7,6 +7,8 @@ output:
     toc: true
     toc_depth: 2
     number_sections: true
+    fig_width: 7
+    fig_height: 6
     fig_caption: true
     df_print: tibble
 ---
@@ -28,18 +30,18 @@ Introduction
 
 Context
 ---------------------
-Los Angeles (L.A.) is one of the most vibrant cities in the United States with a high level of economic activity. It is the 2nd most populous city in the US after New York city and is home to a wide range of business and professional interests. Criminal activity in L.A. is often heavily scrutinised given its diverse population and importance as a cultural hub. 
+Los Angeles (L.A) is one of the most vibrant cities in the United States with a high level of economic activity. It is the 2nd most populous city in the US after New York city and is home to a wide range of business and professional interests. Criminal activity in L.A is often heavily scrutinised given its diverse population and importance as a cultural hub. 
 
-L.A. is considered as one of the most dangerous cities in the US, with a high crime rate of 6.45 incidents per 1000 residents compared to the national median of 3.8 in 2015. According to Los Angeles Police Department (LAPD), crime rate in the city has fallen for 10 consecutive years from 2002 to 2012. However, in 2015, it was reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015. 
+L.A is considered as one of the most dangerous cities in the US, with a high crime rate of 6.45 incidents per 1000 residents compared to the national median of 3.8 in 2015. According to Los Angeles Police Department (LAPD), crime rate in the city has fallen for 10 consecutive years from 2002 to 2012. However, in 2015, it was reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015. 
 
-Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A., it is important to focus efforts on crime prevention and education.
+Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A, it is important to focus efforts on crime prevention and education.
 
-In order to learn more about patterns of crime in L.A. and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A.; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A. and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A. since 2010, with weekly update by City of Los Angeles. 
+In order to learn more about patterns of crime in L.A and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. 
 
 
 Theory
--------------------
-Studies of criminal patterns and activities have in the past belonged to the domain of psychology and sociology. However, with the rise of criminal activities and increased sophistication of criminal operations, there is a need for more targeted crime prevention efforts. In the past decades there have been increased efforts in data collection of criminal activites which have allowed for quantitative analysis to better predict incidence of crime, likely victims of crime and a myriad of other questions. This paper aims to adopt statistical tools and visualisation efforts to paint a clearer picture of criminal activities in L.A. and provide some useful insights and policy recommendatins. based on the analysis done. 
+--------------------
+Studies of criminal patterns and activities have in the past belonged to the domain of psychology and sociology. However, with the rise of criminal activities and increased sophistication of criminal operations, there is a need for more targeted crime prevention efforts. In the past decades there have been increased efforts in data collection of criminal activites which have allowed for quantitative analysis to better predict incidence of crime, likely victims of crime and a myriad of other questions. This paper aims to adopt statistical tools and visualisation efforts to paint a clearer picture of criminal activities in L.A and provide some useful insights and policy recommendations based on the analysis done. Our analysis will also be useful for crime prevention efforts from the victims' point of view, as we aim to highlight demographic and location factors that will make one more susceptible to crime. 
 
 Data Description
 =====================
@@ -106,7 +108,6 @@ _Time_
 | Date.Occurred |    fctr    |   MM/DD/YYYY   |
 | Time.Occurred |      int     |    In 24 hour military time.   |
 
-
 Strengths and Weaknesses of Dataset
 -------------------
 
@@ -118,12 +119,12 @@ The dataset is comprehensive and documents criminal activities in L.A. from 2010
 
 2. Many variables regarding each criminal offence were collected and documented  
 
-We can conduct analysis on different areas with respect to crime in L.A. with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A.. 
+We can conduct analysis on different areas with respect to crime in L.A with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A. 
 
 ### Weaknesses:
 1. Lack of socio-economic information
 
-While the dataset was comprehensive, it did not contain information on the socio-economic status of victims or perpetrators of crimes. Having such information would allow us to make more interesting inferences on likely victims of crime and also the type of crime committed. It is highly likely that socio-economic information will be as powerful as demographics, if not more powerful, in predicting criminal activities. 
+While the dataset was comprehensive, it did not contain information on the socio-economic status of victims or perpetrators of crimes. Having such information will allow us to make more interesting inferences on likely victims of crime and also the type of crime committed. It is highly likely that socio-economic information will be as powerful as demographics, if not more powerful, in predicting criminal activities. 
 
 2. Lack of proper classification for different types of crime
 
@@ -155,7 +156,7 @@ In order to simplify the mapping of location information, we also extracted long
 
 The data also covers and categorizes different types of crime in extensive detail. In order to extract valuable insights, we simplified the crime type variables by grouping them into more general categories. This reduced the 135 variables to sixteen more general variables. 
 
-As we put the focus of our analysis on understanding Los Angeles' victim profiles and distribution of crimes we decided not to use the data that is provided on crime suspects. 
+As we put the focus of our analysis on understanding Los Angeles' victim profiles we decided not to use the data that is provided on crime suspects. 
 
 
 
@@ -417,13 +418,20 @@ LAMap <- ggmap(
   legend = "topright")
 
 LAMap +
-  stat_density2d(aes(x = longitude, y = lattitude, fill = ..level.., 
-                     alpha = ..level..),
+  stat_density2d(aes(x = longitude, y = lattitude, fill = ..level..),
     size = 2, bins = 4, data = crime_data_coord, geom = "polygon", na.rm = TRUE) +
   scale_fill_gradient("Crime\nDensity") +
   scale_alpha(range = c(.4, .8), guide = FALSE) +
   guides(fill = guide_colorbar(barwidth = 1, barheight = 6)) + facet_wrap( ~ crime_type)
 ```
+
+We can see from the plot above the different area densities for each type of crime. As we will expect, for each type of crime, the region with the highest density of crime is close to central L.A.. There are a few main observations that we can make based on the plot. 
+
+Firstly, we observe that homicides, gun shot crimes and kidnapping have fairly similar area distributions, with the highest density located around the area south of downtown Los Angeles.
+
+Secondly, we can see that rape crimes, burglary, robbery, vandalism and other sexual offences are most concentrated in downtown Los Angeles.
+
+Lastly, we observe that crimes like arson and contempt of court have a large area distribution. 
 
 
 
@@ -709,28 +717,36 @@ PH_Crimetype_tbl
 Most of crime type has less ocuuring rate on public holidays, but it likes look assault, battery, gunshots, rape and vandalism has a higher occuring rate in public holidays.
 
 
-
 Prediction and logistic regression
 =====================
 
-We have studied the correlations between the different variables of our datasets, and we have tried to find some patterns about the crime type distribution according to the area and the victims.
+_Data Cleaning_
 
-Now, from these analysis, we would like to make some prediction about the type of a crime or the crime area according to different parameters. To do so, we need to run a multinomial logistic regression since our dependant variable is categorical (crime type or area). Unfortunately, the results are not satisfactory with few variables, and the algorithm is too slow when we add other variables. This is something that should be done in an deeper analysis.
-
-Last but not least, We want to run a simple logistic regression to predict whether a case is likely to be solved or not.
-
-
-```{r, include=FALSE}
+```{r}
 # Remove missing values for victim age and premise code
-crime_data$Status.Description.Global <- ifelse(crime_data$Status.Description == 'Arrested', TRUE, FALSE)
 crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.character)
 crime_data_NA <- crime_data[!is.na(crime_data$Victim.Age) & !is.na(crime_data$Premise.Code) & (crime_data$Victim.Sex == "F" | crime_data$Victim.Sex == "M"),]
 crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.factor)
 
 ```
 
-```{r, eval=FALSE, include=FALSE}
+_Training set and learning set_
+
+```{r}
+train_data <- crime_data_NA[crime_data_NA$Year.Occurred != 2016, ]
+test_data <- crime_data_NA[crime_data_NA$Year.Occurred == 2016, ]
+```
+
+_Predict the type of crime_
+
+First, we try to predict the type of crime according to different parameters such as the age of the potential victim, the sex, the ethnicity and the area
+
+```{r}
 #Multinomial Logistic Regression
+
+library("nnet")
+library(pscl)
+
 model <- multinom(Area.Name ~ Victim.Age + Victim.Sex + Victim.Descent +  crime_type, data = test_data)
 
 summary <- summary(model)
@@ -745,64 +761,22 @@ sum(test_data$Area.Name == predict_area)/length(predict_area)
 ```
 
 
-_Training set and learning set_
-
-We train our algorithm with the data until 2015. Our testing dataset are the crimes which occured in 2016.
-
-```{r}
-train_data <- crime_data_NA[crime_data_NA$Year.Occurred != 2016, ]
-test_data <- crime_data_NA[crime_data_NA$Year.Occurred == 2016, ]
-```
-
-_Logistic Regression_
-
-We try to predict the final status of a crime (Solved or not) according to different parameters such as the age of the potential victim, the sex, the ethnicity, the area, the type of crime and the time between occured and reported crime.
-
-```{r, results='asis'}
-# GLM
-model0 <- glm(Status.Description.Global ~ crime_type + Time.Between.Occured.Reported + Victim.Sex + Victim.Age + Area.Name + Victim.Descent.Global, family=binomial(link='logit'), data=train_data)
-
-```
-
-```{r, echo=FALSE, results='asis'}
-stargazer(model0, align = TRUE, type = 'latex')
-```
-
-From this model, we can see that all the variables are significant at a 95% confidence with a p-value lower than 0.05. When comparing the different independant variables, we realize that the ethnicity of a victim has a smaller impact on finding the suspect of a crime than the area or the type of crime.
-Moreover, the estimate of Time.Between.Occured.Reported confirms being negative, it confirms that the sooner a crime is reported, the more likely it will be solved.
-
-_Prediction_
-
-```{r}
-
-test_data_predict <- test_data %>% select(crime_type, Time.Between.Occured.Reported, Victim.Sex, Victim.Age, Area.Name, Victim.Descent.Global)
-fitted.results <- predict(model0, test_data_predict, type='response')
-fitted.results <- ifelse(fitted.results > 0.5,1,0)
-misClasificError <- mean(fitted.results != test_data$Status.Description.Global)
-print(paste('Accuracy',1-misClasificError))
-```
-
-We run our algorithm with the data from 2016 and have an accuracy of 0.88, which is very good. We can predict with 88% of precision whether a crime will be solved even before the investigation !
 Discussion
 =====================
 
 What results did you find?	
 -------------------
-
-We have studied the patterns of crime in L.A. in three different aspects. From the demographic point of view, we have information about the characteristics of people that are most likely to be a victim:at a young age, females are more possible than male to be involved in a crime. Also, hispanic people has the highest proportion in the number of victims. Hispanic young woman around 25 years old are the most dangerous group in L.A. according to the analysis into the data. In addition, Male vitims in crimes like burglary and assault are higher than female while female victims account for a larger part in battery and other sexual offences.Secondly, looking into the crime-prone areas in L.A..
+We have studied the patterns of crime in L.A in three different aspects. From the demographic point of view, we have information about the characteristics of people that are most likely to be a victim:at a young age, females are more possible than male to be involved in a crime. Also, hispanic people has the highest proportion in the number of victims. Hispanic young woman around 25 years old are the most dangerous group in L.A according to the analysis into the data. In addition, Male vitims in crimes like burglary and assault are higher than female while female victims account for a larger part in battery and other sexual offences.Secondly, looking into the crime-prone areas in L.A,
+we found that 
 
 Why is this interesting?
 -------------------
-
 With the information extracted from the L.A crime dataset,it is possible to provide useful suggestions for LA police in order to reduce the number of either citizens or tourists of L.A from being hurt.In addition,we are interested in the general pattern of crime and curious about what will happen in the future.Thus,a prediction of the crime based on the recent dataset is crucial for the future crime prevention.
-
 Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	
 -------------------
-In this paper, we focus on the victim of crime in order to help prevent certain crimes. The next step could be carrying out investigation in the suspect of crime to help police find suspects and solve crime more efficiently.  
-crime type prediction
-area crime prediction
-suspect
+
+
 
 

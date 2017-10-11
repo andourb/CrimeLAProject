@@ -434,14 +434,6 @@ Occurred Time according to type of crime
 (ex : fraud in the day, rape a night, burglary during the day etc...)
 
 ```{r , echo=FALSE}
-time_func2 <- function(numb){
-  if(numb >=700 & numb<=1200){return("3. 7am to noon")
-  } else if(numb >=1200 & numb < 1800 ){return("4. noon to 6pm")
-  } else if(numb >=1800 & numb <2400 ){return("1. 6pm to midnight")
-  } else if(numb >= 0 & numb<700) {return("2. midnight to 7am")}
-}
-
-crime_data$Time.Occurred.Global = sapply(crime_data$Time.Occurred, time_func2)
 ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Time.Occurred.Global),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
@@ -465,10 +457,6 @@ From the graph, there is no significant difference of probobilities of being a v
 _Hypothesis testing_
 
 ```{r , echo=FALSE}
-crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occurred.Global, "3. 7am to noon", "day time")
-crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "4. noon to 6pm", "day time")
-crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "1. 6pm to midnight", "night")
-crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "2. midnight to 7am", "night")
 Time_sex<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
 crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.character)
 sex_char<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
@@ -489,14 +477,6 @@ Correlation between time reported - time occured and type of crime
 
 ```{r , echo=FALSE}
 
-time_func <- function(numb){
-  if(numb <3){return("less than 3 days")
-  } else if(numb >=3 & numb < 10 ){return("3 days to 10 days")
-    } else if(numb >=10 & numb < 15 ){return("10 days to 15 days")
-    } else if(numb >= 15) {return("more than 15 days")}
-}
-
-crime_data$Time.Between.Occured.Reported.Global = sapply(crime_data$Time.Between.Occured.Reported, time_func)
 ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Time.Between.Occured.Reported.Global),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
@@ -542,7 +522,7 @@ Correlation crime type and case solved or not
 ```{r , echo=FALSE}
 ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Status.Description),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
-We can see from the graph that of all different types of crime, homicide has the highest clear-up rate, which is not surprising as police departments around all over the world always attach more emphasis and put more energy in homicide cases,and LAPD,according to what we find,is not an exception. Arson,burglary and vihecle theft have the three lowest detection rate, which may result from the lack of security cameras in streets in L.A or the little attention paid on these cases.Generally speaking, the cases that invovle physical attack,or so called violent crimes,like assault,battery,have higher probability to be solved while the property crimes are less likely to be solved in L.A.
+We can see from the graph that of all different types of crime, homicide has the highest clear-up rate, which is not surprising as police departments around all over the world always attach more emphasis and put more energy in homicide cases,and LAPD,according to what we find,is not an exception. Arson,burglary and vihecle theft have the three lowest detection rate, which may result from the lack of security cameras in streets in L.A. or the little attention paid on these cases.Generally speaking, the cases that invovle physical attack,or so called violent crimes,like assault,battery,have higher probability to be solved while the property crimes are less likely to be solved in L.A..
 
 
 Based on all the above analysis,we learn that generally people report quicker on physical injury cases and police officers take these cases more seriously,leading to a higher probability of sovling these types cases.

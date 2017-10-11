@@ -811,6 +811,8 @@ What results did you find?
 -------------------
 We have studied the patterns of crime in L.A in three different aspects. From the demographic point of view, we have information about the characteristics of people that are most likely to be a victim:at a young age, females are more possible than male to be involved in a crime. Also, hispanic people has the highest proportion in the number of victims. Hispanic young woman around 25 years old are the most dangerous group in L.A according to the analysis into the data. In addition, Male vitims in crimes like burglary and assault are higher than female while female victims account for a larger part in battery and other sexual offences.Secondly, looking into the crime-prone areas in L.A,
 we found that 
+
+
 From the time analysis part,firstly we find that physical injury cases like homicide,assault,battery,rape are more likely to happen during night.Also,women are more likely to be victims during day time while men are more likely to be attacked during night,which is inconsistent with our expectation. What else, crimes reported within less than three days have a highest clear-up rate compared to those with longer reporting time, which shows us that the quicker victims report, the more likely for police to solve the cases.Besides the reporting time, the nature of cases also affects the clear up rate.The cases that invovle physical attack,or so called violent crimes,like assault,battery,have higher probability to be solved while the property crimes are less likely to be solved in L.A.
 
 

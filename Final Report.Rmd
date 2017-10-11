@@ -426,6 +426,7 @@ Lastly, we observe that crimes like arson and contempt of court have a large are
 
 Time
 =====================
+
 In people's intuition,we always believe more crimes happen during night compared to day time and women are more likely to be a victim during night compared to men.In this part,we will try to look into these thoughts and find if this intuition consistent with factual data in terms of different types of crime.Besides we will also focus on the time between case occurred and reported to see if victim's quick reaction has a positive effect on solving the cases.
 
 Occurred Time according to type of crime
@@ -457,6 +458,10 @@ From the graph, there is no significant difference of probobilities of being a v
 _Hypothesis testing_
 
 ```{r , echo=FALSE}
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occurred.Global, "3. 7am to noon", "day time")
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "4. noon to 6pm", "day time")
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "1. 6pm to midnight", "night")
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "2. midnight to 7am", "night")
 Time_sex<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
 crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.character)
 sex_char<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
@@ -829,6 +834,5 @@ In this paper, we focus on the victim of crime in order to help prevent certain 
 crime type prediction
 area crime prediction
 suspect
-
 
 

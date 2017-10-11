@@ -119,7 +119,7 @@ The dataset is comprehensive and documents criminal activities in L.A. from 2010
 
 2. Many variables regarding each criminal offence were collected and documented  
 
-We can conduct analysis on different areas with respect to crime in L.A with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A. 
+We can conduct analysis on different areas with respect to crime in L.A. with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A.. 
 
 ### Weaknesses:
 1. Lack of socio-economic information
@@ -764,13 +764,19 @@ Discussion
 
 What results did you find?	
 -------------------
+We have studied the patterns of crime in L.A. in three different aspects. From the demographic point of view, we have information about the characteristics of people that are most likely to be a victim:at a young age, females are more possible than male to be involved in a crime. Also, hispanic people has the highest proportion in the number of victims. Hispanic young woman around 25 years old are the most dangerous group in L.A. according to the analysis into the data. In addition, Male vitims in crimes like burglary and assault are higher than female while female victims account for a larger part in battery and other sexual offences.Secondly, looking into the crime-prone areas in L.A.,
+we found that 
 
 Why is this interesting?
 -------------------
-
+With the information extracted from the L.A. crime dataset,it is possible to provide useful suggestions for LA police in order to reduce the number of either citizens or tourists of L.A. from being hurt.In addition,we are interested in the general pattern of crime and curious about what will happen in the future.Thus,a prediction of the crime based on the recent dataset is crucial for the future crime prevention.
 Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	
 -------------------
+
+crime type prediction
+area crime prediction
+suspect
 
 

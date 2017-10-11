@@ -28,16 +28,19 @@ crime_data<-read.csv("data/clean_data.csv")
 Introduction
 =====================
 
-Crime is always a hot topic in Los Angeles. With a considerably higher violent crime rate of 6.45 per 1000 residents in 2015, compared to US national median of 3.8 per 1000 residents (based on FBI crime data), L.A is amongst the most dangerous cities in US. According to Los Angeles Police Department(LAPD), from 2002 to 2012 the crime rate in city had declined in 10 consecutive years. However, in 2015, LAPD reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015.Officials have pointed a range of factors that resulted in the jump, including more gang violence and a growth of homeless people. With a high chance of 1 in 33 to become a victim of either violent or property crime in L.A, it is never too much to emphasize the importance of crime prevention and public safety. In order to find patterns of crime in L.A and come up with some useful suggestions accordingly in crime prevention, this paper looks into three main questions of various crime in L.A: who is more likely to be a victim; where is the accident-prone place in L.A and when the crime is most likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. As this data is transcribed from original crime reports that are typed on paper and therefore there may be some inaccuracies within the data.
-
 Context
--------------------
-_Text here_
+---------------------
+Los Angeles (L.A) is one of the most vibrant cities in the United States with a high level of economic activity. It is the 2nd most populous city in the US after New York city and is home to a wide range of business and professional interests. Criminal activity in L.A is often heavily scrutinised given its diverse population and importance as a cultural hub. 
+
+L.A is considered as one of the most dangerous cities in the US, with a high crime rate of 6.45 incidents per 1000 residents compared to the national median of 3.8 in 2015. According to Los Angeles Police Department (LAPD), crime rate in the city has fallen for 10 consecutive years from 2002 to 2012. However, in 2015, it was reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015. 
+
+Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A, it is important to focus efforts on crime prevention and education.
+
+In order to learn more about patterns of crime in L.A and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. As this data is transcribed from original crime reports that are typed on paper and therefore there may be some inaccuracies within the data.
 
 Theory
 -------------------
-_Text here_
-
+Studies of criminal patterns and activities have in the past belonged to the domain of psychology and sociology. However, with the rise of criminal activities and increased sophistication of criminal operations, there is a need for more targeted crime prevention efforts. In the past decades there have been increased efforts in data collection of criminal activites which have allowed for quantitative analysis to better predict incidence of crime, likely victims of crime and a myriad of other questions. This paper aims to adopt statistical tools and visualisation efforts to paint a clearer picture of criminal activities in L.A and provide some useful insights and policy recommendatins. based on the analysis done. 
 
 Data Description
 =====================

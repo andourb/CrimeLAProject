@@ -108,6 +108,7 @@ _Time_
 | Date.Occurred |    fctr    |   MM/DD/YYYY   |
 | Time.Occurred |      int     |    In 24 hour military time.   |
 
+
 Strengths and Weaknesses of Dataset
 -------------------
 
@@ -156,7 +157,7 @@ In order to simplify the mapping of location information, we also extracted long
 
 The data also covers and categorizes different types of crime in extensive detail. In order to extract valuable insights, we simplified the crime type variables by grouping them into more general categories. This reduced the 135 variables to sixteen more general variables. 
 
-As we put the focus of our analysis on understanding Los Angeles' victim profiles we decided not to use the data that is provided on crime suspects. 
+As we put the focus of our analysis on understanding Los Angeles' victim profiles and distribution of crimes we decided not to use the data that is provided on crime suspects. 
 
 
 

@@ -239,7 +239,20 @@ crime_data%>%
   ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar(position="dodge")+facet_wrap(~Victim.Descent.Global)+
   labs(x="Victime Age",y="Number of victims")
 ```
-From the above plot,it is obvious that Hispanic account for the largest part of victims,followed by black and white victims. Also,there are observable difference in the age distribution between male and female for the three ethnicity group.
+From the above plot,it is obvious that Hispanic account for the largest part of victims,followed by black and white victims. Also,there are observable difference in the age distribution between male and female for the three ethnicity group.Focus on hispanic victims,female aged below around 40 are much more likely to be a victim than male.
+```{r}
+#Thus focus on Hispanic
+#demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+# filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+#         Victim.Sex=="F"|Victim.Sex=="M")%>%
+#  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+#  summarise(count = n())
+
+#Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
+
+#ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
+#  geom_bar(stat = 'identity', position = 'dodge')    
+```
 
 
 _Hypothesis testing_
@@ -265,8 +278,9 @@ t.test(white_female,white_male,alternative = "two.sided")
 
 
 ```
-From the t-tests above,female Hispanic victims are around 6 years younger on average than male Hispanic victims.For black people,female victims are around 3 years younger on average than male victims.However,as for white people,the average age is approximately the same(with a difference of between 0.02 to 0.25).
+In the t-tests above,all three p-values are smaller than 0.05 which means that the difference in mean age is significant for all three ethnicity groups.Female Hispanic victims are around 6 years younger on average than male Hispanic victims.For black people,female victims are around 3 years younger on average than male victims.However,as for white people,the average age is approximately the same(with a difference of between 0.02 to 0.25).
 
+Also,we want to know if the proportion of crime victims based on different ethnicity are the same as in the real population.Therefore,we calculate the proportion of white,black,hispanic victims below.
 ```{r , echo=FALSE}
 crime_data1<-filter(crime_data,!crime_data$Victim.Descent=="")
 sum(crime_data1$Victim.Descent.Global=="White")/nrow(crime_data1)
@@ -274,23 +288,18 @@ sum(crime_data1$Victim.Descent.Global=="Black")/nrow(crime_data1)
 sum(crime_data1$Victim.Descent.Global=="Hispanic")/nrow(crime_data1)
 
 ```
-We did a proportion comparison with real population data.According to the population of LA,white people was 49.8% while black people was 9.6% of the population.While in the crime data,white people was 27.4% and black people was 17.8%.Thus,there are huge difference between the population proportion with the crime proportion. 
+According to the population of LA, non-Hispanic white people was 28.7% while black people was 9.6% of the population. While in the crime data,white people was 27.4% and black people was 17.8%.Thus,there are huge difference between the population proportion with the crime proportion for black people.
 
 
 
+We can see that the variables we discussed above are correlated with each other from the plots,now we construct a chi-squared test to verify the dependence shown in the plots.
 ```{r}
-#Thus focus on Hispanic
-#demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
-# filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
-#         Victim.Sex=="F"|Victim.Sex=="M")%>%
-#  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
-#  summarise(count = n())
+chisq.test(crime_data$Victim.Descent,crime_data$Victim.Age)
+chisq.test(crime_data$Victim.Descent,crime_data$Victim.Sex)
+chisq.test(crime_data$Victim.Age,crime_data$Victim.Sex)
 
-#Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
-
-#ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
-#  geom_bar(stat = 'identity', position = 'dodge')    
 ```
+From the chi-squared tests above,it is obvious that there are certain degree of dependence between age and sex,age and ethnicity,sex and ethnicity.
 
 _summary_
 
@@ -323,6 +332,7 @@ crime_data%>%
   ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
 
 ```
+
 
 
 

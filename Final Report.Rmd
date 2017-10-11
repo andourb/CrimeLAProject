@@ -469,9 +469,7 @@ _Hypothesis testing_
 
 Public holidays impact
 -------------------
-
-Effect of Public Holidays on crime Occurrence and Type.
-```{r}
+```{r, eval=FALSE}
 
 #Exploratory plot
 ggplot(crime_data,aes(x=Date.Occurred.C,color=public_holiday))+geom_bar()+scale_color_manual(values=c("red","blue"))
@@ -490,7 +488,7 @@ crime_data%>%
   summarise(count=n())
     
 crime_data%>%
-  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01",TRUE,FALSE))%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"))%>%
   summarise(Average.Report.Time=mean(Time.Between.Occured.Reported)) %>%
   arrange(desc(Average.Report.Time))
 
@@ -501,98 +499,181 @@ crime_data%>%
 
 ```
 
-Findings from the exploratory plot and tables:
-i.) The mean of # of crime in LA is higher on public holidays, but
-ii.) The number of crime is significantly higher on 1st of Jan in every year, and
-iii.) The length between occured time and reporting time tend to be longer on 1st Jan in every year;
+Police always releases crime prevention tips before holidays, which gives us an impression that the number of crime occured on a holiday is generally higher than that on a regular day. We are interested in knowing whether our dataset support this impression to be true or not.
 
-
-I cannot find information regarding this on the dataLA website, but it looks like they have coded crime incidents occured on other days as 1st Jan for some conditions.
-So should we exclude cases with reporting time lag for say i.)365 days/ ii. 15 days (which is the average)?
-
-
-As nature of Sundays is similar to holidays, I will include all Sundays as 'public holidays and Sundays' as the next step.
-
-
-
-
-```{R}
-#exclude lagged for more than 15 days (15 or 15+71 (1SD) or 15 + 141 (2SD?)
-
-crime_data$Jan1.exclude.15 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>15
-
+```{r}
 
 crime_data%>%
-  filter(Jan1.exclude.15==FALSE)%>%
   group_by(public_holiday,Date.Occurred.C)%>%
   summarise(count=n()) %>%
   group_by(public_holiday) %>%
-  summarise(average.crime.per.day=mean(count)) %>%
+  summarise(Average.Crime.per.Day=round(mean(count),1)) %>%
   arrange(desc(public_holiday))
 
-#by crime type
-crime_data%>%
-  filter(Jan1.exclude.15==FALSE)%>%
-  group_by(crime_type,public_holiday,Date.Occurred.C)%>%
+```
+To begin with, we have extract a list of holiday dates (not including Sundays) in LA from 2010 - 2016 from the Internet to catagorise crime occured dates to holiday and non-holiday. The avereage number of crime per day is on public holidays is 577.5 and that on non-public holidays is 559.8, which is a good start as it looks align with the impression.
+
+```{r}
+    
+Jan1df1 <- crime_data%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"),Date.Occurred.C)%>%
   summarise(count=n()) %>%
-  group_by(crime_type,public_holiday) %>%
-  summarise(average.crime.per.day=mean(count)) %>%
-  arrange(crime_type,desc(public_holiday))
+  group_by(Jan1) %>%
+  summarise(Average.Crime.per.Day=round(mean(count),1))
+
+Jan1df2 <- crime_data%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"))%>%
+  summarise(Average.Report.Time=round(mean(Time.Between.Occured.Reported),1))
+
+Jan1df3 <- crime_data%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"))%>%
+  summarise(SD.Report.Time=round(sd(Time.Between.Occured.Reported),1))
+
+merge.data.frame(merge.data.frame(Jan1df1,Jan1df2,by="Jan1"),Jan1df3,by="Jan1")
 
 ```
 
+However, we also found a pattern when exploring the data; number of crime on 1st Janurary in each year is extremly high comparing to othere days, and as 1st Jan is usually a public holiday, this would distort the picture. Besides, there is also a significant difference in the average reporting time (number of day between when the crime ocurred and reported) and the standard deviation of the distribution of reporting time.
 
-Included Sundays and exclude crime occured on 1st Jan and have a time gap between occured and report >15 days
+Unfortunately we could not find any information on the Internet or from the source of the dataset that could explain the peaks on 1st Janurary. The most logical reason of this could be some of the cases were occured in the year but on an unknown day, and instead of keeping the occured day NA or missing, it was set as the 1st day of the year.
 
-```{R}
+In order to have a meaningful comparison between number of crime cases on holidays and regular days, we have to remove the cases that were not truly occured on 1st Jan. As there is no indicator in the dataset pointing out those cases, the best estimator we have is number of days between occured and reported. Assuming the crimes on 1st Janurary would have the same distribution as other dates in a year, we decided to exclude cases pccured on 1st Jan with time difference between occured and reported more than 14.4 + 2*88.7 = 192 days. In theory, this range should have covered over 95% of the cases on 1st Jan.
+
+```{r}
+
+crime_data$Jan1.exclude.192 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>192
 
 
-crime_data%>%
-  filter(Jan1.exclude.15==FALSE)%>%
-  group_by(Sundays_public_holiday,Date.Occurred.C)%>%
+cJan1df1 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"),Date.Occurred.C)%>%
   summarise(count=n()) %>%
-  group_by(Sundays_public_holiday) %>%
-  summarise(average.crime.per.day=mean(count)) %>%
-  arrange(desc(Sundays_public_holiday))
+  group_by(Jan1) %>%
+  summarise(Average.Crime.per.Day=round(mean(count),1))
 
-#by crime type
-crime_data%>%
-  filter(Jan1.exclude.15==FALSE)%>%
-  group_by(crime_type,Sundays_public_holiday,Date.Occurred.C)%>%
-  summarise(count=n()) %>%
-  group_by(crime_type,Sundays_public_holiday) %>%
-  summarise(average.crime.per.day=mean(count)) %>%
-  arrange(crime_type,desc(Sundays_public_holiday))
+cJan1df2 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"))%>%
+  summarise(Average.Report.Time=round(mean(Time.Between.Occured.Reported),1))
+
+cJan1df3 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"))%>%
+  summarise(SD.Report.Time=round(sd(Time.Between.Occured.Reported),1))
+
+merge.data.frame(merge.data.frame(cJan1df1,cJan1df2,by="Jan1"),cJan1df3,by="Jan1")
 
 ```
+
+The way we use to exclude cases on 1st Jan is definiely not prefer, the standard derivation of cases on 1st Jan is lower than that on other days as we have a sharp cut at 192 days. But it is the best way we have to reduce some of the 'noise' and have excluded half of the cases on 1st Jan.
+
+```{r}
+
+crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(public_holiday,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(public_holiday) %>%
+  summarise(Average.Crime.per.Day=round(mean(count),1)) %>%
+  arrange(desc(public_holiday))
+
+```
+
+And the average number of crime per day on public holidats is now less than that of that on non-public holidays, after excluding some of the 1st Jan cases. Before moving on to the hypothesis testing on whether there is more or less crime cases on a public holidays, we still have one question, are the natural of Sundays the same as public holidays, which most of people are not required to work and shop closes early on the day, in terms of number of crime cases per day?
 
 
 ```{r}
-#two sample t-test - is there a difference between # of crime on public holidays/Sundays vs other days?
 
-Regular_day_crime <- crime_data%>%filter(Sundays_public_holiday==FALSE & Jan1.exclude.15==FALSE)%>%select(Date.Occurred.C)%>%
-  group_by(Date.Occurred.C)%>%summarise(count=n())
+crime_data$Sundays.PH.Regular <- ifelse(crime_data$public_holiday=="Public Holidays","Public Holidays",ifelse(crime_data$Sundays=="Sunday","non-PH Sundays","not PH or Sunday"))
 
-Holiday_crime <- crime_data%>%filter(Sundays_public_holiday==TRUE & Jan1.exclude.15==FALSE)%>%select(Date.Occurred.C)%>%
-  group_by(Date.Occurred.C)%>%summarise(count=n())
 
-mean(Regular_day_crime$count); mean(Holiday_crime$count)
+PH_S_df1 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Sundays.PH.Regular,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays.PH.Regular) %>%
+  summarise(Average.Crime.per.Day=round(mean(count),1))
 
-t.test(Regular_day_crime$count,Holiday_crime$count,alternative = "greater")
+PH_S_df2 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Sundays.PH.Regular)%>%
+  summarise(Average.Report.Time=round(mean(Time.Between.Occured.Reported),1))
+
+PH_S_df3 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Sundays.PH.Regular)%>%
+  summarise(SD.Report.Time=round(sd(Time.Between.Occured.Reported),1))
+
+merge.data.frame(merge.data.frame(PH_S_df1,PH_S_df2,by="Sundays.PH.Regular"),PH_S_df3,by="Sundays.PH.Regular") %>% arrange(Average.Crime.per.Day)
+
+Sunday.count <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular=="non-PH Sundays")%>%
+  group_by(Sundays.PH.Regular,Date.Occurred.C)%>%
+  summarise(count=n())
+PH.count <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular=="Public Holidays")%>%
+  group_by(Sundays.PH.Regular,Date.Occurred.C)%>%
+  summarise(count=n())
+
+t.test(Sunday.count$count,PH.count$count,alternative="two.sided")
 
 ```
 
-
-Result shows that the average number of crime on holidays and Sundays is lower than that in regular days in 95% significance level.
+Not surprisingly, the mean number of crime cases per day on Public Holidays and on Sundays are not much different.
+And the t-test also indicate that there is no difference between the mean number of crime cases in Sundays and Public Holidays.
+Therefore, Sundays and Public Holidays could be grouped in testing whether there is a difference between number of crime cases in Holidays(Public Holidays and Sundays) and the other days.
 
 
 ```{r}
-#By crime type (Chi-sq-test?)
-crime_data_excluded_1Jan_15 <- crime_data%>%filter(Jan1.exclude.15==FALSE) %>% select(crime_type,Sundays_public_holiday,Date.Occurred.C) %>% group_by(crime_type,Sundays_public_holiday,Date.Occurred.C) %>% summarise (countperday=n()) %>% ungroup() %>% group_by(crime_type,Sundays_public_holiday) %>% summarise (average_per_day=mean(countperday))
+crime_data$Sundays.PH.Regular2 <- ifelse(crime_data$public_holiday=="Holidays","Public Holidays",ifelse(crime_data$Sundays=="Sunday","Holidays","not PH or Sunday"))
 
-crime_data_excluded_1Jan_15
 
-PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays_public_holiday,crime_data_excluded_1Jan_15)
+H_R_df1 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()) %>%
+  group_by(Sundays.PH.Regular2) %>%
+  summarise(Average.Crime.per.Day=round(mean(count),1))
+
+H_R_df2 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Sundays.PH.Regular2)%>%
+  summarise(Average.Report.Time=round(mean(Time.Between.Occured.Reported),1))
+
+H_R_df3 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE)%>%
+  group_by(Sundays.PH.Regular2)%>%
+  summarise(SD.Report.Time=round(sd(Time.Between.Occured.Reported),1))
+
+merge.data.frame(merge.data.frame(H_R_df1,H_R_df2,by="Sundays.PH.Regular2"),H_R_df3,by="Sundays.PH.Regular2") %>% arrange(Average.Crime.per.Day)
+
+Holiday.count <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays")%>%
+  group_by(Sundays.PH.Regular,Date.Occurred.C)%>%
+  summarise(count=n())
+Regular.count <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday")%>%
+  group_by(Sundays.PH.Regular,Date.Occurred.C)%>%
+  summarise(count=n())
+
+t.test(Holiday.count$count,Regular.count$count,alternative="less")
+
+
+```
+
+The average number of crime cases on Holidays (Public Holidays and Sundays combined) is less than that on regular days, shown by the t-test, in 99% confidence level, which is different from the general perception that there are more crime cases on holidays.
+
+
+```{r}
+#By crime type 
+crime_data_excluded_1Jan_192 <- crime_data%>%
+  filter(Jan1.exclude.192==FALSE) %>% 
+  select(crime_type,Sundays.PH.Regular2,Date.Occurred.C) %>%
+  group_by(crime_type,Sundays.PH.Regular2,Date.Occurred.C) %>% summarise (countperday=n()) %>% ungroup() %>% group_by(crime_type,Sundays.PH.Regular2) %>% summarise (average_per_day=mean(countperday))
+
+crime_data_excluded_1Jan_192
+
+PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays.PH.Regular2,crime_data_excluded_1Jan_192)
 PH_Crimetype_tbl
 ```
 

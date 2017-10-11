@@ -28,16 +28,20 @@ crime_data<-read.csv("data/clean_data.csv")
 Introduction
 =====================
 
-Crime is always a hot topic in Los Angeles. With a considerably higher violent crime rate of 6.45 per 1000 residents in 2015, compared to US national median of 3.8 per 1000 residents (based on FBI crime data), L.A is amongst the most dangerous cities in US. According to Los Angeles Police Department(LAPD), from 2002 to 2012 the crime rate in city had declined in 10 consecutive years. However, in 2015, LAPD reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015.Officials have pointed a range of factors that resulted in the jump, including more gang violence and a growth of homeless people. With a high chance of 1 in 33 to become a victim of either violent or property crime in L.A, it is never too much to emphasize the importance of crime prevention and public safety. In order to find patterns of crime in L.A and come up with some useful suggestions accordingly in crime prevention, this paper looks into three main questions of various crime in L.A: who is more likely to be a victim; where is the accident-prone place in L.A and when the crime is most likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. As this data is transcribed from original crime reports that are typed on paper and therefore there may be some inaccuracies within the data.
-
 Context
--------------------
-_Text here_
+---------------------
+Los Angeles (L.A) is one of the most vibrant cities in the United States with a high level of economic activity. It is the 2nd most populous city in the US after New York city and is home to a wide range of business and professional interests. Criminal activity in L.A is often heavily scrutinised given its diverse population and importance as a cultural hub. 
+
+L.A is considered as one of the most dangerous cities in the US, with a high crime rate of 6.45 incidents per 1000 residents compared to the national median of 3.8 in 2015. According to Los Angeles Police Department (LAPD), crime rate in the city has fallen for 10 consecutive years from 2002 to 2012. However, in 2015, it was reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015. 
+
+Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A, it is important to focus efforts on crime prevention and education.
+
+In order to learn more about patterns of crime in L.A and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. 
+
 
 Theory
 -------------------
-_Text here_
-
+Studies of criminal patterns and activities have in the past belonged to the domain of psychology and sociology. However, with the rise of criminal activities and increased sophistication of criminal operations, there is a need for more targeted crime prevention efforts. In the past decades there have been increased efforts in data collection of criminal activites which have allowed for quantitative analysis to better predict incidence of crime, likely victims of crime and a myriad of other questions. This paper aims to adopt statistical tools and visualisation efforts to paint a clearer picture of criminal activities in L.A and provide some useful insights and policy recommendatins. based on the analysis done. 
 
 Data Description
 =====================
@@ -45,7 +49,7 @@ Data Description
 The dataset contains information on crime incidents in Los Angeles. The source description (LAPD) states that the dataset may have some inaccuracies due to information being transferred from original crime statements that are typed on paper. As crime data contains sensitive personal information, fields that contain address information are only provided to the nearest hundred block. The dataset includes crime data from 2010 through September 2017.
 
 Two separate csv files are provided with  Crime_Data_2010_2017  containing the main data and MO_Codes containing the description of MO codes that are included in the crime data for classification. 
-The dataset is made up of 1.584.316 observations and 26 variables. To structure the variables, we split them into four groups: demographic, geographic, crime and time type variables. Demographic category consists of the victimâs age, sex and descent. The type of variables and a detailed description can be found in the table below: 
+The dataset is made up of 1.584.316 observations and 26 variables. To structure the variables, we split them into four groups: demographic, geographic, crime and time type variables. Demographic category consists of the victims age, sex and descent. The type of variables and a detailed description can be found in the table below: 
 
 :Demographics
 
@@ -107,51 +111,43 @@ The final category groups all variables related to time. It contains a variable 
 
 
 Data Cleaning Description
--------------------
+=========================
 As the data is provided in two different csv files. The first step that we took was to merge the crime_data and code_data into one single dataset. Then we looked at the date columns (date occured and date reported) and reformated each date to three new columns. Thus creating a new colum for the day occured, month occured and year occured as well as day reported, month reported and year reported. 
 For the completeness of full information on every year, we have omitted data from the year 2017 and will focus on the data from 2010 to 2016 included. 
 
-In order to make an interesting analysis we wanted to work with the information on victim descent. The abbreviations for victim descent in the original dataset, however, made analysis a little impractical as they weren't intuitively understandable (e.g. "D" standing for "Cambodian"). This is why we labeled the descent variables with the full description. (e.g. "W" being "White" and "D" being "Cambodian"). This led to ddd categories of descent: 
+In order to make an interesting analysis we wanted to work with the information on victim descent. The abbreviations for victim descent in the original dataset, however, made analysis a little impractical as they weren't intuitively understandable (e.g. "D" standing for "Cambodian"). This is why we labeled the descent variables with the full description. (e.g. "W" being "White" and "D" being "Cambodian").
+
+
+As there were some very specific subcategories for America (such as Alaskan Native)  we also added an additional more global column on victim descent to be able to work with both the more detailed descent information and the more global descent variables. We reduced the global descent column to contain six groups:
+
 
 :Victim Descent
 
-| Victim Descent Original  |   Victim Descent New  |
-| ------------- | :------------------------     |
-| H  |     Hispanic     | 
-| W  |   White       | 
-| B  |    Black      | 
-| O  |   Other       | 
-| A  |   Other Asian       | 
-| C  |     Chinese     | 
-| ' '  |          | 
-| X  |    Unknown      | 
-| F  |    Filipino      | 
-| U  |   Hawaiian       | 
-| K  |    Korean      | 
-| P  |   Pacific Islander       | 
-| G  |    Guamanian      | 
-| J  |   Japanese       | 
-| I  |    American Indian/Alaskan Native      | 
-| V  |   Vietnamese       | 
-| Z  |    Asian Indian      | 
-| S  |    Samoan      | 
-| D  |    Cambodian      | 
-| L  |    Laotian      | 
-| -  |    -      | 
-
-As there were some very specific subcategories for America (such as Alaskan Native)  we also added an additional more global colum on victim descent to be able to work with both the more detailed descent information and the more global descent variables. We reduced the global descent column to contain six groups(White, Black, Hispanic, Other, Asian and Pacific.  
+| Victim Descent Global Variables |
+| ------------- |
+| White |
+| Black |
+| Hispanic |
+| Other | 
+| Asian |
+| Pacific |
 
 In order to simplify the mapping of location information, we also extracted longitude and latitude from the location column and created additional, separate columns for longitude and latitude. 
 
-The data covers the 21 different areas of Los Angeles and categorizes 135 different types of crimes.
---> renamed crime variables 
+The data also covers and categorizes different types of crime in extensive detail. In order to extract valuable insights, we simplified the crime type variables by grouping them into more general categories. This reduced the 135 variables to sixteen more general variables. 
+
+As we put the focus of our analysis on understanding Los Angeles' victim profiles we decided not to use the data that is provided on crime suspects. 
+
+
+
+
 
 
 
 Demographic
 =====================
 
-_Text here_
+_Firstly,we want to find out what kind of people are more likely to be a victim of crime and thus look at some demographic variables such as age,sex and ethnicity._
 
 Age and sex distribution
 -------------------
@@ -168,20 +164,14 @@ library(scales)
 
 ```
 
+Here we begin with a summary of the age among all victims.The summary of the victim age shows the youngest victim is only 10 years old and the oldest being 99 years old. The mean age of victim is around 36 years old. 
 ```{r , echo=FALSE}
 
 ##distribution of age among all victims
 summary(crime_data$Victim.Age,na.rm=TRUE)
-ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE))+geom_density()
-
-#can choose either one below(haven't decided yet)
-#plot option 1:
-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
-ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
-
 ```
-The summary of the victim age shows the youngest victim is only 10 years old and the oldest being 99 years old.The mean age of victim is around 36 years old.From the density plot of victim age,we can see that there are two peak points at 
-14 and 25 respectively.In addition,a histogram plot of the victim age of male and female is shown above.From the overlapping pattern,it is obvious that male are more likely to be a victim of crime at a young age(10-15 years old) or from 40 to 70 years old while female tend to be more in danger between around 15 to 35 years old,especially aged between 18 and 25.For example,at age 25,number of female victims are approximately 7500 higher than male victims.
+
+Typically the age pattern of victims between male and female are not the same.We then construct a summary for male and female respectively and a histogram plot to see if it is the case.
 
 ```{r}
 #summary of female age and male age respectively
@@ -189,22 +179,33 @@ female_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="F"]
 male_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="M"]
 summary(female_age,na.rm=TRUE)
 summary(male_age,na.rm=TRUE)
+#plot
+crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
+ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
 
 ```
+
+The minimum and maximum of victim age are the same for both sex. However,the female victim age is smaller(37.52 years old) on average than for male(38.72 years old).
+From the overlapping pattern of the histogram plot above, it is obvious that male are more likely to be a victim of crime at a young age(10-15 years old) or from 40 to 70 years old while female tend to be more in danger between around 15 to 35 years old, especially aged between 18 and 25. For example, at age 25,number of female victims are approximately 7500 higher than male victims.
+
+
 _Hypothesis testing_
+
+As we have seen a different pattern in the victim age for male and female above, we want to use student t-test to check if the difference exists statistcally or is due to random variation. 
+
 ```{r , echo=FALSE}
 # Code here
 t.test(female_age,male_age,alternative = "two.sided")
 
 ```
-_Text here_
-From the summary of both male and female,the mean age of victim is lower for female(37.52 years old).We want to see whether this difference in mean age is due to random variation.A t-test is conducted to find out the results.Based on the t-test,we can conclude that there is strong evidence in rejecting the null hypothesis that the difference in means is 0.Thus,mean age of victim is significantly smaller for female.
 
-
+A t-test is conducted build on the null hypothesis that there is no significant difference in the mean victim age between male and female.Based on the t-test,a p-value of less than 2.2e-16 is really low and we can conclude that there is strong evidence in rejecting the null hypothesis that the difference in means is 0.Thus,mean age of victim is significantly smaller for female.
 
 
 Ethnicity
 -------------------
+
+Now that we have some clue about the relationship between age and gender,we want to dig more by adding another ethnicity variable.Below is a boxplot of victim age of male and female based on different ethnicity.
 
 ```{r , echo=FALSE}
 #average age of victims based on ethnicity and gender(Hispanic has the lowerst avg age)
@@ -216,43 +217,42 @@ avg_age<-crime_data%>%
   arrange(avg_age)
 
 #option1:barchart of mean age between different Ethnicity
-ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
+#ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
 
-#option2:boxplot of age between different Ethnicity
+#option2:boxplot of age between different Ethnicity(chosen)
 crime_data%>%
   filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
   ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=Victim.Descent.Global))+geom_boxplot()
 ```
-From the bar chart of average victim age based on ethnicity and gender,Hispanic have the lowest average age among all ethnicity groups and female Hispanic is the lowest(around 33 years old).For Blacks and Hispanic,female victim tends to be younger on average while it is not that obvious for other ethinicty groups.We want to carry out hypothesis testing to determine whether it is indeed the case according to the plot.
+From the boxplot based on ethnicity and gender,Hispanic have the lowest median age among all ethnicity groups and female Hispanic is the lowest(around 33 years old).For Blacks and Hispanic,female victim tends to be younger while it is not that obvious for other ethinicty groups.
+
+We also have a histogram plot of victims counts with different gender and ethnicity below.
 
 ```{r}
 #number of vitims with different gender and ethnicity
 crime_data%>%
   filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
-  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar()+facet_wrap(~Victim.Descent.Global)+
+  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar(position="dodge")+facet_wrap(~Victim.Descent.Global)+
   labs(x="Victime Age",y="Number of victims")
 ```
-From the above plot,it is obvious that Hispanic account for the largest part of victims and we would like to focus on Hispanic victims.
-
-
+From the above plot,it is obvious that Hispanic account for the largest part of victims,followed by black and white victims. Also,there are observable difference in the age distribution between male and female for the three ethnicity group.Focus on hispanic victims,female aged below around 40 are much more likely to be a victim than male.
 ```{r}
 #Thus focus on Hispanic
-demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
- filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
-         Victim.Sex=="F"|Victim.Sex=="M")%>%
-  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
-  summarise(count = n())
+#demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+# filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+#         Victim.Sex=="F"|Victim.Sex=="M")%>%
+#  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+#  summarise(count = n())
 
-Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
+#Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
 
-ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
-  geom_bar(stat = 'identity', position = 'dodge')    
+#ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
+#  geom_bar(stat = 'identity', position = 'dodge')    
 ```
 
-_Text here_
-We now have some clue in the most likely victim of a crime:Hispanic young female aged aroung 25 years old.
-_Hypothesis testing_
 
+_Hypothesis testing_
+We want to carry out hypothesis testing to determine whether it is indeed the case according to the plot.
 ```{r}
 Hispanic_female1<-crime_data%>%filter(Victim.Descent.Global=="Hispanic")
 Hispanic_female<-Hispanic_female1$Victim.Age[Hispanic_female1$Victim.Sex=="F"]
@@ -274,28 +274,39 @@ t.test(white_female,white_male,alternative = "two.sided")
 
 
 ```
-From the t-tests above,female Hispanic victims are around 6 years younger on average than male Hispanic victims.For black people,female victims are around 3 years younger on average than male victims.However,as for white people,the average age is approximately the same(with a difference of between 0.02 to 0.25).
+In the t-tests above,all three p-values are smaller than 0.05 which means that the difference in mean age is significant for all three ethnicity groups.Female Hispanic victims are around 6 years younger on average than male Hispanic victims.For black people,female victims are around 3 years younger on average than male victims.However,as for white people,the average age is approximately the same(with a difference of between 0.02 to 0.25).
 
+Also,we want to know if the proportion of crime victims based on different ethnicity are the same as in the real population.Therefore,we calculate the proportion of white,black,hispanic victims below.
 ```{r , echo=FALSE}
-# Code here
-#
 crime_data1<-filter(crime_data,!crime_data$Victim.Descent=="")
 sum(crime_data1$Victim.Descent.Global=="White")/nrow(crime_data1)
 sum(crime_data1$Victim.Descent.Global=="Black")/nrow(crime_data1)
 sum(crime_data1$Victim.Descent.Global=="Hispanic")/nrow(crime_data1)
 
 ```
-We did a proportion comparison with real population data.According to the population of LA,white people was 49.8% while black people was 9.6% of the population.While in the crime data,white people was 27.4% and black people was 17.8%.Thus,there are huge difference between the population proportion with the crime proportion. 
+According to the population of LA, non-Hispanic white people was 28.7% while black people was 9.6% of the population. While in the crime data,white people was 27.4% and black people was 17.8%.Thus,there are huge difference between the population proportion with the crime proportion for black people.
 
 
 
+We can see that the variables we discussed above are correlated with each other from the plots,now we construct a chi-squared test to verify the dependence shown in the plots.
+```{r}
+chisq.test(crime_data$Victim.Descent,crime_data$Victim.Age)
+chisq.test(crime_data$Victim.Descent,crime_data$Victim.Sex)
+chisq.test(crime_data$Victim.Age,crime_data$Victim.Sex)
 
-Correlation between type of crime and age/sex/ethnicity (PLOT + hypothesis Testing !)
--------------------
+```
+From the chi-squared tests above,it is obvious that there are certain degree of dependence between age and sex,age and ethnicity,sex and ethnicity.
+
+_summary_
+
+From the demographic analysis carried out so far,we found that people with certain demographic characteristics are more likely to be a victim of crime. For example,Hispanic young female aged aroung 25 years old are more likely to become crime victim.
+
+
 
 
 relationship with type of crime
 -------------------
+As we now have some understanding on the victim information,we want to find out whether the characteristics of victims  differs in different types of crime.
 ```{r , echo=FALSE}
 #type of crime with gender
 type<-crime_data%>%select(crime_type,Victim.Sex,Victim.Age)%>%
@@ -310,13 +321,19 @@ From the barplot on crime type above,burglary,battery,assault and vandalism are 
 
 ```{r}
 #boxplot of victim age between different type of crimes and gender
-crime_data%>%
-  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
-  group_by(crime_type,Victim.Sex)%>%
+#crime_data%>%
+#  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
+#  group_by(crime_type,Victim.Sex)%>%
   
-  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
+#  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
 
 ```
+We are also intersted in the pattern of crime type with different ethnicity.Overall,burglary/theft occurs most frequently for all ethnicity groups.The burglary/theft proportion is the lowest for black victims.As for the proportion of assault and battery,asians,white,asian,pacific islanders share similar proportion pattern whereas black and hispanic people have higher proportion in this two crime types.
+```{r}
+crime_data %>% filter(!Victim.Descent.Global=="-",!Victim.Descent.Global==" ") %>% ggplot(aes(x=Victim.Descent.Global, fill=crime_type))+ geom_bar(position='fill') + labs(x="Victim's Ethnicity", y= "Proportion of Crimes")
+```
+
+
 
 
 Area distribution

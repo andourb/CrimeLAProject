@@ -45,7 +45,7 @@ Data Description
 The dataset contains information on crime incidents in Los Angeles. The source description (LAPD) states that the dataset may have some inaccuracies due to information being transferred from original crime statements that are typed on paper. As crime data contains sensitive personal information, fields that contain address information are only provided to the nearest hundred block. The dataset includes crime data from 2010 through September 2017.
 
 Two separate csv files are provided with  Crime_Data_2010_2017  containing the main data and MO_Codes containing the description of MO codes that are included in the crime data for classification. 
-The dataset is made up of 1.584.316 observations and 26 variables. To structure the variables, we split them into four groups: demographic, geographic, crime and time type variables. Demographic category consists of the victimâs age, sex and descent. The type of variables and a detailed description can be found in the table below: 
+The dataset is made up of 1.584.316 observations and 26 variables. To structure the variables, we split them into four groups: demographic, geographic, crime and time type variables. Demographic category consists of the victims age, sex and descent. The type of variables and a detailed description can be found in the table below: 
 
 :Demographics
 

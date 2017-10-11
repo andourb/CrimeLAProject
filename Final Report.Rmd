@@ -36,7 +36,8 @@ L.A is considered as one of the most dangerous cities in the US, with a high cri
 
 Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A, it is important to focus efforts on crime prevention and education.
 
-In order to learn more about patterns of crime in L.A and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. As this data is transcribed from original crime reports that are typed on paper and therefore there may be some inaccuracies within the data.
+In order to learn more about patterns of crime in L.A and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. 
+
 
 Theory
 -------------------

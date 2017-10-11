@@ -85,10 +85,10 @@ crime_data$Time.Between.Occured.Reported.Global = sapply(crime_data$Time.Between
 
 
 time_func2 <- function(numb){
-  if(numb >=700 & numb<=1200){return("7am to noon")
-  } else if(numb >=1200 & numb < 1800 ){return("noon to 6pm")
-  } else if(numb >=1800 & numb <2400 ){return("6pm to midnight")
-  } else if(numb >= 0 & numb<700) {return("midnight to 7am")}
+  if(numb >=700 & numb<=1200){return("2. 7am to noon")
+  } else if(numb >=1200 & numb < 1800 ){return("3. noon to 6pm")
+  } else if(numb >=1800 & numb <2400 ){return("1. 6pm to midnight")
+  } else if(numb >= 0 & numb<700) {return("4. midnight to 7am")}
 }
 
 crime_data$Time.Occurred.Global = sapply(crime_data$Time.Occurred, time_func2)

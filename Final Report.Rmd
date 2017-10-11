@@ -775,6 +775,8 @@ Help LA police, predict the crime, prevention for the potential victims
 What would be the next steps?	
 -------------------
 
-
+crime type prediction
+area crime prediction
+suspect
 
 

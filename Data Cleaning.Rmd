@@ -98,11 +98,11 @@ crime_data$Time.Occurred.Global = sapply(crime_data$Time.Occurred, time_func2)
 
 ```{r}
 #categorize the Status Description in to 3 type: Arrested,invest cont and other
-levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Adult Arrest"] <- "Arrested"
-levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Juv Arrest"] <- "Arrested"
-levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Juv Other"] <- "Other"
-levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="Adult Other"] <- "Other"
-levels(clean_data$Status.Description)[levels(clean_data$Status.Description)=="UNK"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Arrest"] <- "Arrested"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Arrest"] <- "Arrested"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Other"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Other"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="UNK"] <- "Other"
 ```
 
 # Filter
@@ -315,6 +315,8 @@ crime_data <- mutate(crime_data,Sundays=ifelse(Date.Occurred.C %in% all_Sundays,
 
                 
 ```
+
+
 
 
 ## Export dataset

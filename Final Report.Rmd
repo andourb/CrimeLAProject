@@ -786,7 +786,7 @@ model0 <- glm(Status.Description.Global ~ crime_type + Time.Between.Occured.Repo
 ```
 
 ```{r, echo=FALSE, results='asis'}
-stargazer(model0, align = TRUE, type = 'latex')
+stargazer(model0, type = 'latex')
 ```
 
 From this model, we can see that all the variables are significant at a 95% confidence with a p-value lower than 0.05. When comparing the different independant variables, we realize that the ethnicity of a victim has a smaller impact on finding the suspect of a crime than the area or the type of crime.

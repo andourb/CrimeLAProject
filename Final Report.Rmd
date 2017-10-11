@@ -419,73 +419,128 @@ Lastly, we observe that crimes like arson and contempt of court have a large are
 
 
 
-
 Time
 =====================
+In people's intuition,we always believe more crimes happen during night compared to day time and women are more likely to be a victim during night compared to men.In this part,we will try to look into these thoughts and find if this intuition consistent with factual data in terms of different types of crime.Besides we will also focus on the time between case occurred and reported to see if victim's quick reaction has a positive effect on solving the cases.
 
-_Text here_
-
-Day Time according to type of crime
+Occurred Time according to type of crime
 -------------------
 
 (ex : fraud in the day, rape a night, burglary during the day etc...)
 
 ```{r , echo=FALSE}
-# Code here
+time_func2 <- function(numb){
+  if(numb >=700 & numb<=1200){return("3. 7am to noon")
+  } else if(numb >=1200 & numb < 1800 ){return("4. noon to 6pm")
+  } else if(numb >=1800 & numb <2400 ){return("1. 6pm to midnight")
+  } else if(numb >= 0 & numb<700) {return("2. midnight to 7am")}
+}
+
+crime_data$Time.Occurred.Global = sapply(crime_data$Time.Occurred, time_func2)
+ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Time.Occurred.Global),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
-_Text here_
+We can learn from the graph that unsurprisingly over 70% rape cases occured during night,from 6 pm to 7am.Homicide,assault,battery,gunshots,robbery,vandalism and vehicle theft are also more like to happen during night.On the contrary, Arson,fraud,and drug offences are more likely to happen during day time.So what is consistent with our intuition is that physical injury cases are more likely to happen during night.
 
-_Hypothesis testing_
 
-```{r , echo=FALSE}
-# Code here
-```
 
-Day Time according to sex
+
+
+Occurred Time according to sex
 -------------------
 
 ```{r , echo=FALSE}
-# Code here
+Time_sex<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
+
+ggplot(Time_sex)+geom_bar(aes(x=Victim.Sex,fill=Time.Occurred.Global),position="fill")
 ```
 
-_Text here_
+From the graph, there is no significant difference of probobilities of being a victim between males and females st a specific time during a day. What surprised us is that it seems that actually males are more likely to be a victim in night(6pm to 7am) compared to females.In order to see if the difference is significant,we use prop.test to analyse the data.
 
 _Hypothesis testing_
 
 ```{r , echo=FALSE}
-# Code here
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occurred.Global, "3. 7am to noon", "day time")
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "4. noon to 6pm", "day time")
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "1. 6pm to midnight", "night")
+crime_data$Time.Occured.Glo12 <- str_replace(crime_data$Time.Occured.Glo12, "2. midnight to 7am", "night")
+Time_sex<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
+crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.character)
+sex_char<-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")
+ct2<-data.frame(sex=factor(sex_char[,"Victim.Sex"]),occurred.time=factor(sex_char[,"Time.Occured.Glo12"]))
+table2<-table(ct2)
+table2
+
+prop.test(table2)
 ```
+
+To do the prop.test,we combine the four periods time of a day into two categroies:day time(7am to 6pm) and night(6pm to 7am).The probabilities we get here is the probabilities of crime happening during day time for females and males,respectively.The P value is smaller than 0.05, which implies that there is a siginificant difference of the proportions of cases occurring during day time between men and women.Similar to our findings through graph above, women are more likely to be victims during day time while men are more likely to be attacked during night,which is inconsistent with our expectation. A possible reason behind this is that women are probably more tend to stay at home during night for their safety, which seems indeed a good idea. 
+
+
+
 
 Correlation between time reported - time occured and type of crime
 -------------------
 
 ```{r , echo=FALSE}
-# Code here
+
+time_func <- function(numb){
+  if(numb <3){return("less than 3 days")
+  } else if(numb >=3 & numb < 10 ){return("3 days to 10 days")
+    } else if(numb >=10 & numb < 15 ){return("10 days to 15 days")
+    } else if(numb >= 15) {return("more than 15 days")}
+}
+
+crime_data$Time.Between.Occured.Reported.Global = sapply(crime_data$Time.Between.Occured.Reported, time_func)
+ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Time.Between.Occured.Reported.Global),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
-_Text here_
+It's shown from the graph that people usually react quickly to physical attack such as homicide,gunshots,assault.It's not surprising that victims report much later on fraud(may need time to realize that they are cheated),rape and other sexual offences(may feel too shameful to report) ,while it's quite hard to explain that why there is a delay in reporting arson cases.
 
-_Hypothesis testing_
 
-```{r , echo=FALSE}
-# Code here
-```
 
-Correlation between time reported - time occured and case solved or not for a specific month
+
+
+Correlation between time reported - time occured and case solved or not 
 -------------------
 
 ```{r , echo=FALSE}
-# Code here
+status<-sapply(crime_data$Status.Description,as.character)
+
+
+#categorize the Status Description in to 3 type: Arrested,invest cont and other
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Arrest"] <- "Arrested"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Arrest"] <- "Arrested"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Juv Other"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="Adult Other"] <- "Other"
+levels(crime_data$Status.Description)[levels(crime_data$Status.Description)=="UNK"] <- "Other"
+ggplot(crime_data)+geom_bar(aes(x=Time.Between.Occured.Reported.Global,fill=Status.Description),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
 
-_Text here_
+From this graph,we find that crimes reported in less than three days have a highest clear-up rate compared to that with longer reporting time.But the difference is not obvious so we need to do a prop.test on this to see if the difference is significant.
 
 _Hypothesis testing_
 
 ```{r , echo=FALSE}
-# Code here
+crime_data$Status.Description.Glo <- ifelse(crime_data$Status.Description == 'Arrested', TRUE, FALSE)
+ct<-data.frame(time=factor(crime_data[,"Time.Between.Occured.Reported.Global"]),status=factor(crime_data[,"Status.Description.Glo"]))
+table1<-table(ct)
+table1
+prop.test(table1)
 ```
+In the hypothesis testing, we combine the three types of cases status(Arrested,invest Cont and others) into two status,where arrested equals to TRUE while invest Cont and others equal to FALSE.The probabilities we get here represents the proportion of unsolved cases of all cases categorized by the time between cases occurred and reported,which is 10 days to 15 days,3 days to 10 days, less than 3 days and more than 15 days, respectively. As p value in the proportion test is smaller than 0.05, it tells us that the unsolved rate of cases reported within less than 3 days(0.8703460) is significantly lower than the that of cases with longer report time, which is consistent with the intuitive findings according to the graph.This shows us that the quicker victims report, the more likely for police to solve the cases.
+
+
+
+Correlation crime type and case solved or not 
+-------------------
+```{r , echo=FALSE}
+ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Status.Description),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
+```
+We can see from the graph that of all different types of crime, homicide has the highest clear-up rate, which is not surprising as police departments around all over the world always attach more emphasis and put more energy in homicide cases,and LAPD,according to what we find,is not an exception. Arson,burglary and vihecle theft have the three lowest detection rate, which may result from the lack of security cameras in streets in L.A or the little attention paid on these cases.Generally speaking, the cases that invovle physical attack,or so called violent crimes,like assault,battery,have higher probability to be solved while the property crimes are less likely to be solved in L.A.
+
+
+Based on all the above analysis,we learn that generally people report quicker on physical injury cases and police officers take these cases more seriously,leading to a higher probability of sovling these types cases.
 
 
 Public holidays impact

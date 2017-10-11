@@ -124,7 +124,7 @@ We can conduct analysis on different areas with respect to crime in L.A with the
 ### Weaknesses:
 1. Lack of socio-economic information
 
-While the dataset was comprehensive, it did not contain information on the socio-economic status of victims or perpetrators of crimes. Having such information will allow us to make more interesting inferences on likely victims of crime and also the type of crime committed. It is highly likely that socio-economic information will be as powerful as demographics, if not more powerful, in predicting criminal activities. 
+While the dataset was comprehensive, it did not contain information on the socio-economic status of victims or perpetrators of crimes. Having such information would allow us to make more interesting inferences on likely victims of crime and also the type of crime committed. It is highly likely that socio-economic information will be as powerful as demographics, if not more powerful, in predicting criminal activities. 
 
 2. Lack of proper classification for different types of crime
 

@@ -107,44 +107,33 @@ The final category groups all variables related to time. It contains a variable 
 
 
 Data Cleaning Description
--------------------
+=========================
 As the data is provided in two different csv files. The first step that we took was to merge the crime_data and code_data into one single dataset. Then we looked at the date columns (date occured and date reported) and reformated each date to three new columns. Thus creating a new colum for the day occured, month occured and year occured as well as day reported, month reported and year reported. 
 For the completeness of full information on every year, we have omitted data from the year 2017 and will focus on the data from 2010 to 2016 included. 
 
-In order to make an interesting analysis we wanted to work with the information on victim descent. The abbreviations for victim descent in the original dataset, however, made analysis a little impractical as they weren't intuitively understandable (e.g. "D" standing for "Cambodian"). This is why we labeled the descent variables with the full description. (e.g. "W" being "White" and "D" being "Cambodian"). This led to ddd categories of descent: 
+In order to make an interesting analysis we wanted to work with the information on victim descent. The abbreviations for victim descent in the original dataset, however, made analysis a little impractical as they weren't intuitively understandable (e.g. "D" standing for "Cambodian"). This is why we labeled the descent variables with the full description. (e.g. "W" being "White" and "D" being "Cambodian").
+
+
+As there were some very specific subcategories for America (such as Alaskan Native)  we also added an additional more global column on victim descent to be able to work with both the more detailed descent information and the more global descent variables. We reduced the global descent column to contain six groups:
+
 
 :Victim Descent
 
-| Victim Descent Original  |   Victim Descent New  |
-| ------------- | :------------------------     |
-| H  |     Hispanic     | 
-| W  |   White       | 
-| B  |    Black      | 
-| O  |   Other       | 
-| A  |   Other Asian       | 
-| C  |     Chinese     | 
-| ' '  |          | 
-| X  |    Unknown      | 
-| F  |    Filipino      | 
-| U  |   Hawaiian       | 
-| K  |    Korean      | 
-| P  |   Pacific Islander       | 
-| G  |    Guamanian      | 
-| J  |   Japanese       | 
-| I  |    American Indian/Alaskan Native      | 
-| V  |   Vietnamese       | 
-| Z  |    Asian Indian      | 
-| S  |    Samoan      | 
-| D  |    Cambodian      | 
-| L  |    Laotian      | 
-| -  |    -      | 
-
-As there were some very specific subcategories for America (such as Alaskan Native)  we also added an additional more global colum on victim descent to be able to work with both the more detailed descent information and the more global descent variables. We reduced the global descent column to contain six groups(White, Black, Hispanic, Other, Asian and Pacific.  
+| Victim Descent Global Variables |
+| ------------- |
+| White |
+| Black |
+| Hispanic |
+| Other | 
+| Asian |
+| Pacific |
 
 In order to simplify the mapping of location information, we also extracted longitude and latitude from the location column and created additional, separate columns for longitude and latitude. 
 
-The data covers the 21 different areas of Los Angeles and categorizes 135 different types of crimes.
---> renamed crime variables 
+The data also covers and categorizes different types of crime in extensive detail. In order to extract valuable insights, we simplified the crime type variables by grouping them into more general categories. This reduced the 135 variables to sixteen more general variables. 
+
+As we put the focus of our analysis on understanding Los Angeles' victim profiles we decided not to use the data that is provided on crime suspects. 
+
 
 
 

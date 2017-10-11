@@ -140,6 +140,9 @@ As we put the focus of our analysis on understanding Los Angeles' victim profile
 
 
 
+
+
+
 Demographic
 =====================
 
@@ -317,12 +320,16 @@ From the barplot on crime type above,burglary,battery,assault and vandalism are 
 
 ```{r}
 #boxplot of victim age between different type of crimes and gender
-crime_data%>%
-  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
-  group_by(crime_type,Victim.Sex)%>%
+#crime_data%>%
+#  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
+#  group_by(crime_type,Victim.Sex)%>%
   
-  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
+#  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
 
+```
+We are also intersted in the pattern of crime type with different ethnicity.Overall,burglary/theft occurs most frequently for all ethnicity groups.The burglary/theft proportion is the lowest for black victims.As for the proportion of assault and battery,asians,white,asian,pacific islanders share similar proportion pattern whereas black and hispanic people have higher proportion in this two crime types.
+```{r}
+crime_data %>% filter(!Victim.Descent.Global=="-",!Victim.Descent.Global==" ") %>% ggplot(aes(x=Victim.Descent.Global, fill=crime_type))+ geom_bar(position='fill') + labs(x="Victim's Ethnicity", y= "Proportion of Crimes")
 ```
 
 

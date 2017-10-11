@@ -184,6 +184,7 @@ library(lubridate)
 library(tidyr)
 library(stringr)
 library(scales)
+library(stargazer)
 
 ```
 
@@ -763,10 +764,18 @@ Most of crime type has less ocuuring rate on public holidays, but it likes look 
 Prediction and logistic regression
 =====================
 
+We have studied the correlations between the different variables of our datasets, and we have tried to find some patterns about the crime type distribution according to the area and the victims.
+
++Now, from these analysis, we would like to make some prediction about the type of a crime or the crime area according to different parameters. To do so, we need to run a multinomial logistic regression since our dependant variable is categorical (crime type or area). Unfortunately, the results are not satisfactory with few variables, and the algorithm is too slow when we add other variables. This is something that should be done in an deeper analysis.
+
+Last but not least, We want to run a simple logistic regression to predict whether a case is likely to be solved or not.
+
+
 _Data Cleaning_
 
 ```{r}
 # Remove missing values for victim age and premise code
+crime_data$Status.Description.Global <- ifelse(crime_data$Status.Description == 'Arrested', TRUE, FALSE)
 crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.character)
 crime_data_NA <- crime_data[!is.na(crime_data$Victim.Age) & !is.na(crime_data$Premise.Code) & (crime_data$Victim.Sex == "F" | crime_data$Victim.Sex == "M"),]
 crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.factor)
@@ -775,33 +784,43 @@ crime_data[, "Victim.Sex"] <- sapply(crime_data[, "Victim.Sex"], as.factor)
 
 _Training set and learning set_
 
+We train our algorithm with the data until 2015. Our testing dataset are the crimes which occured in 2016.
+
 ```{r}
 train_data <- crime_data_NA[crime_data_NA$Year.Occurred != 2016, ]
 test_data <- crime_data_NA[crime_data_NA$Year.Occurred == 2016, ]
 ```
 
-_Predict the type of crime_
+_Logistic Regression_
 
-First, we try to predict the type of crime according to different parameters such as the age of the potential victim, the sex, the ethnicity and the area
+We try to predict the final status of a crime (Solved or not) according to different parameters such as the age of the potential victim, the sex, the ethnicity, the area, the type of crime and the time between occured and reported crime.
 
 ```{r}
-#Multinomial Logistic Regression
-
-library("nnet")
-library(pscl)
-
-model <- multinom(Area.Name ~ Victim.Age + Victim.Sex + Victim.Descent +  crime_type, data = test_data)
-
-summary <- summary(model)
-
-pR2(model)
-
-test_data_predict <- test_data %>% select(Victim.Age, Victim.Sex, crime_type)
-predict_area <- predict(model, test_data_predict, type = 'class')
-
-sum(test_data$Area.Name == predict_area)/length(predict_area)
-
+# GLM
+model0 <- glm(Status.Description.Global ~ crime_type + Time.Between.Occured.Reported + Victim.Sex + Victim.Age + Area.Name + Victim.Descent.Global, family=binomial(link='logit'), data=train_data)
 ```
+
+```{r, echo=FALSE, results='asis'}
+stargazer(model0, align = TRUE, type = 'latex')
+```
+
+From this model, we can see that all the variables are significant at a 95% confidence with a p-value lower than 0.05. When comparing the different independant variables, we realize that the ethnicity of a victim has a smaller impact on finding the suspect of a crime than the area or the type of crime.
+Moreover, the estimate of Time.Between.Occured.Reported confirms being negative, it confirms that the sooner a crime is reported, the more likely it will be solved.
+ 
+_Prediction_
+
+```{r}
+  		  
+test_data_predict <- test_data %>% select(crime_type, Time.Between.Occured.Reported, Victim.Sex, Victim.Age, Area.Name, Victim.Descent.Global)
+fitted.results <- predict(model0, test_data_predict, type='response')
+fitted.results <- ifelse(fitted.results > 0.5,1,0)
+misClasificError <- mean(fitted.results != test_data$Status.Description.Global)
+print(paste('Accuracy',1-misClasificError))
+```	
+
+  		  
+We run our algorithm with the data from 2016 and have an accuracy of 0.88, which is very good. We can predict with 88% of precision whether a crime will be solved even before the investigation !
+
 
 
 Discussion

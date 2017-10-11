@@ -162,6 +162,7 @@ As we put the focus of our analysis on understanding Los Angeles' victim profile
 
 
 
+
 Demographic
 =====================
 
@@ -171,7 +172,7 @@ Age and sex distribution
 -------------------
 
 ```{r library, echo=FALSE, message=FALSE, warning=FALSE}
-library(dplyr)
+library(dplyr) 
 library(ggmap)
 library(ggplot2)
 library(dplyr)
@@ -199,7 +200,7 @@ summary(female_age,na.rm=TRUE)
 summary(male_age,na.rm=TRUE)
 #plot
 crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
-ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
+ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")+labs(x="Victim Age",y="Number of Victims")
 
 ```
 
@@ -240,7 +241,7 @@ avg_age<-crime_data%>%
 #option2:boxplot of age between different Ethnicity(chosen)
 crime_data%>%
   filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
-  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=Victim.Descent.Global))+geom_boxplot()
+  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=Victim.Descent.Global))+geom_boxplot()+labs(x="Gender",y="Victim Age")
 ```
 From the boxplot based on ethnicity and gender,Hispanic have the lowest median age among all ethnicity groups and female Hispanic is the lowest(around 33 years old).For Blacks and Hispanic,female victim tends to be younger while it is not that obvious for other ethinicty groups.
 
@@ -350,6 +351,7 @@ We are also intersted in the pattern of crime type with different ethnicity.Over
 ```{r}
 crime_data %>% filter(!Victim.Descent.Global=="-",!Victim.Descent.Global==" ") %>% ggplot(aes(x=Victim.Descent.Global, fill=crime_type))+ geom_bar(position='fill') + labs(x="Victim's Ethnicity", y= "Proportion of Crimes")
 ```
+
 
 
 
@@ -758,7 +760,10 @@ Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	
 -------------------
-
+In this paper, we focus on the victim of crime in order to help prevent certain crimes. The next step could be carrying out investigation in the suspect of crime to help police find suspects and solve crime more efficiently.  
+crime type prediction
+area crime prediction
+suspect
 
 
 

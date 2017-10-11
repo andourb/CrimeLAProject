@@ -30,18 +30,18 @@ Introduction
 
 Context
 ---------------------
-Los Angeles (L.A) is one of the most vibrant cities in the United States with a high level of economic activity. It is the 2nd most populous city in the US after New York city and is home to a wide range of business and professional interests. Criminal activity in L.A is often heavily scrutinised given its diverse population and importance as a cultural hub. 
+Los Angeles (L.A.) is one of the most vibrant cities in the United States with a high level of economic activity. It is the 2nd most populous city in the US after New York city and is home to a wide range of business and professional interests. Criminal activity in L.A. is often heavily scrutinised given its diverse population and importance as a cultural hub. 
 
-L.A is considered as one of the most dangerous cities in the US, with a high crime rate of 6.45 incidents per 1000 residents compared to the national median of 3.8 in 2015. According to Los Angeles Police Department (LAPD), crime rate in the city has fallen for 10 consecutive years from 2002 to 2012. However, in 2015, it was reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015. 
+L.A. is considered as one of the most dangerous cities in the US, with a high crime rate of 6.45 incidents per 1000 residents compared to the national median of 3.8 in 2015. According to Los Angeles Police Department (LAPD), crime rate in the city has fallen for 10 consecutive years from 2002 to 2012. However, in 2015, it was reported that for the first time in more than a decade, all categories of crime rose across the city (violent crime rose 20.2% and all crime was up 12.6% compared with 2014). The upward trend continued in 2016, with higher crime across four categories compared to 2015. 
 
-Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A, it is important to focus efforts on crime prevention and education.
+Officials have attributed the increase to a variety of factors, including increased gang activity and a rise in the number of homeless people. With a high chance of roughly 1 in 33 to become a victim of either violent or property crime in L.A., it is important to focus efforts on crime prevention and education.
 
-In order to learn more about patterns of crime in L.A and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A since 2010, with weekly update by City of Los Angeles. 
+In order to learn more about patterns of crime in L.A. and to come up useful suggestions to aid efforts in crime prevention, this paper looks into three main questions of crime patterns in L.A.; firstly, who is more likely to be a victim; secondly, where are the accident-prone areas in L.A. and thirdly, when are crimes more likely to occur. The dataset used in this paper contains information of crime occurred in L.A. since 2010, with weekly update by City of Los Angeles. 
 
 
 Theory
 --------------------
-Studies of criminal patterns and activities have in the past belonged to the domain of psychology and sociology. However, with the rise of criminal activities and increased sophistication of criminal operations, there is a need for more targeted crime prevention efforts. In the past decades there have been increased efforts in data collection of criminal activites which have allowed for quantitative analysis to better predict incidence of crime, likely victims of crime and a myriad of other questions. This paper aims to adopt statistical tools and visualisation efforts to paint a clearer picture of criminal activities in L.A and provide some useful insights and policy recommendations based on the analysis done. Our analysis will also be useful for crime prevention efforts from the victims' point of view, as we aim to highlight demographic and location factors that will make one more susceptible to crime. 
+Studies of criminal patterns and activities have in the past belonged to the domain of psychology and sociology. However, with the rise of criminal activities and increased sophistication of criminal operations, there is a need for more targeted crime prevention efforts. In the past decades there have been increased efforts in data collection of criminal activites which have allowed for quantitative analysis to better predict incidence of crime, likely victims of crime and a myriad of other questions. This paper aims to adopt statistical tools and visualisation efforts to paint a clearer picture of criminal activities in L.A. and provide some useful insights and policy recommendations based on the analysis done. Our analysis will also be useful for crime prevention efforts from the victims' point of view, as we aim to highlight demographic and location factors that will make one more susceptible to crime. 
 
 Data Description
 =====================
@@ -119,7 +119,7 @@ The dataset is comprehensive and documents criminal activities in L.A. from 2010
 
 2. Many variables regarding each criminal offence were collected and documented  
 
-We can conduct analysis on different areas with respect to crime in L.A with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A. 
+We can conduct analysis on different areas with respect to crime in L.A. with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A.. 
 
 ### Weaknesses:
 1. Lack of socio-economic information
@@ -541,7 +541,7 @@ Correlation crime type and case solved or not
 ```{r , echo=FALSE}
 ggplot(crime_data)+geom_bar(aes(x=crime_type,fill=Status.Description),position="fill")+theme(axis.text = element_text(angle = 45,hjust = 1))
 ```
-We can see from the graph that of all different types of crime, homicide has the highest clear-up rate, which is not surprising as police departments around all over the world always attach more emphasis and put more energy in homicide cases,and LAPD,according to what we find,is not an exception. Arson,burglary and vihecle theft have the three lowest detection rate, which may result from the lack of security cameras in streets in L.A or the little attention paid on these cases.Generally speaking, the cases that invovle physical attack,or so called violent crimes,like assault,battery,have higher probability to be solved while the property crimes are less likely to be solved in L.A.
+We can see from the graph that of all different types of crime, homicide has the highest clear-up rate, which is not surprising as police departments around all over the world always attach more emphasis and put more energy in homicide cases,and LAPD,according to what we find,is not an exception. Arson,burglary and vihecle theft have the three lowest detection rate, which may result from the lack of security cameras in streets in L.A. or the little attention paid on these cases.Generally speaking, the cases that invovle physical attack,or so called violent crimes,like assault,battery,have higher probability to be solved while the property crimes are less likely to be solved in L.A..
 
 
 Based on all the above analysis,we learn that generally people report quicker on physical injury cases and police officers take these cases more seriously,leading to a higher probability of sovling these types cases.
@@ -549,7 +549,7 @@ Based on all the above analysis,we learn that generally people report quicker on
 
 Public holidays impact
 -------------------
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 
 #Exploratory plot
 ggplot(crime_data,aes(x=Date.Occurred.C,color=public_holiday))+geom_bar()+scale_color_manual(values=c("red","blue"))
@@ -581,7 +581,7 @@ crime_data%>%
 
 Police always releases crime prevention tips before holidays, which gives us an impression that the number of crime occured on a holiday is generally higher than that on a regular day. We are interested in knowing whether our dataset support this impression to be true or not.
 
-```{r}
+```{r, echo=FALSE}
 
 crime_data%>%
   group_by(public_holiday,Date.Occurred.C)%>%
@@ -593,7 +593,7 @@ crime_data%>%
 ```
 To begin with, we have extract a list of holiday dates (not including Sundays) in LA from 2010 - 2016 from the Internet to catagorise crime occured dates to holiday and non-holiday. The avereage number of crime per day is on public holidays is 577.5 and that on non-public holidays is 559.8, which is a good start as it looks align with the impression.
 
-```{r}
+```{r, echo=FALSE}
     
 Jan1df1 <- crime_data%>%
   group_by(Jan1=ifelse(Day.Occurred=="01" & Month.Occurred=="01","1st Jan","Other Days"),Date.Occurred.C)%>%
@@ -619,7 +619,7 @@ Unfortunately we could not find any information on the Internet or from the sour
 
 In order to have a meaningful comparison between number of crime cases on holidays and regular days, we have to remove the cases that were not truly occured on 1st Jan. As there is no indicator in the dataset pointing out those cases, the best estimator we have is number of days between occured and reported. Assuming the crimes on 1st Janurary would have the same distribution as other dates in a year, we decided to exclude cases pccured on 1st Jan with time difference between occured and reported more than 14.4 + 2*88.7 = 192 days. In theory, this range should have covered over 95% of the cases on 1st Jan.
 
-```{r}
+```{r, echo=FALSE}
 
 crime_data$Jan1.exclude.192 <- crime_data$Day.Occurred=="01" & crime_data$Month.Occurred=="01" & crime_data$Time.Between.Occured.Reported>192
 
@@ -647,7 +647,7 @@ merge.data.frame(merge.data.frame(cJan1df1,cJan1df2,by="Jan1"),cJan1df3,by="Jan1
 
 The way we use to exclude cases on 1st Jan is definiely not prefer, the standard derivation of cases on 1st Jan is lower than that on other days as we have a sharp cut at 192 days. But it is the best way we have to reduce some of the 'noise' and have excluded half of the cases on 1st Jan.
 
-```{r}
+```{r, echo=FALSE}
 
 crime_data%>%
   filter(Jan1.exclude.192==FALSE)%>%
@@ -662,7 +662,7 @@ crime_data%>%
 And the average number of crime per day on public holidats is now less than that of that on non-public holidays, after excluding some of the 1st Jan cases. Before moving on to the hypothesis testing on whether there is more or less crime cases on a public holidays, we still have one question, are the natural of Sundays the same as public holidays, which most of people are not required to work and shop closes early on the day, in terms of number of crime cases per day?
 
 
-```{r}
+```{r, echo=FALSE}
 
 crime_data$Sundays.PH.Regular <- ifelse(crime_data$public_holiday=="Public Holidays","Public Holidays",ifelse(crime_data$Sundays=="Sunday","non-PH Sundays","not PH or Sunday"))
 
@@ -704,7 +704,7 @@ And the t-test also indicate that there is no difference between the mean number
 Therefore, Sundays and Public Holidays could be grouped in testing whether there is a difference between number of crime cases in Holidays(Public Holidays and Sundays) and the other days.
 
 
-```{r}
+```{r, echo=FALSE}
 crime_data$Sundays.PH.Regular2 <- ifelse(crime_data$public_holiday=="Holidays","Public Holidays",ifelse(crime_data$Sundays=="Sunday","Holidays","not PH or Sunday"))
 
 
@@ -744,20 +744,100 @@ t.test(Holiday.count$count,Regular.count$count,alternative="less")
 The average number of crime cases on Holidays (Public Holidays and Sundays combined) is less than that on regular days, shown by the t-test, in 99% confidence level, which is different from the general perception that there are more crime cases on holidays.
 
 
-```{r}
+```{r, echo=FALSE}
+
+
 #By crime type 
-crime_data_excluded_1Jan_192 <- crime_data%>%
+crime_type_excluded_1Jan_192 <- crime_data%>%
   filter(Jan1.exclude.192==FALSE) %>% 
   select(crime_type,Sundays.PH.Regular2,Date.Occurred.C) %>%
-  group_by(crime_type,Sundays.PH.Regular2,Date.Occurred.C) %>% summarise (countperday=n()) %>% ungroup() %>% group_by(crime_type,Sundays.PH.Regular2) %>% summarise (average_per_day=mean(countperday))
+  group_by(crime_type,Sundays.PH.Regular2,Date.Occurred.C) %>% summarise (countperday=n()) %>% ungroup() %>%   group_by(crime_type,Sundays.PH.Regular2) %>% summarise (average_per_day=mean(countperday))
 
-crime_data_excluded_1Jan_192
+#crime_data_excluded_1Jan_192
 
-PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays.PH.Regular2,crime_data_excluded_1Jan_192)
+PH_Crimetype_tbl <- xtabs(average_per_day~crime_type+Sundays.PH.Regular2,crime_type_excluded_1Jan_192)
 PH_Crimetype_tbl
 ```
 
-Most of crime type has less ocuuring rate on public holidays, but it likes look assault, battery, gunshots, rape and vandalism has a higher occuring rate in public holidays.
+```{r, eval=FALSE, echo=FALSE}
+
+#Assault
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Assault")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Assault")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+#Battery
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Battery")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Battery")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+#Gunshots Fired
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Gunshots Fired")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Gunshots Fired")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+#Homicide
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Homicide")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Homicide")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+#Rape
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Rape")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Rape")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+#Robbery
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Robbery")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Robbery")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+#Vandalism
+t.test((crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="Holidays" & crime_type=="Vandalism")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,
+  (crime_data%>%
+  filter(Jan1.exclude.192==FALSE & Sundays.PH.Regular2=="not PH or Sunday"& crime_type=="Vandalism")%>%
+  group_by(Sundays.PH.Regular2,Date.Occurred.C)%>%
+  summarise(count=n()))$count,alternative="less")
+
+
+```
+
+
+Although it looks like it is safer on holidays, it may not be true as not all type of crimes are less often to happen. Most of crime type has less ocuuring rate on holidays, but the mean number of cases for assault, battery, gunshots, homocide, rape, robbery and vandalism has a higher occuring rate on holidays.
+
+These crime types are somehow related to festival, alcohol and conflicts in crowded area. Therefore, the best way to minimise the chance of being a victim of crime in holidays is to stay at home and avoid the crowd.
 
 
 Prediction and logistic regression
@@ -809,12 +889,12 @@ Discussion
 
 What results did you find?	
 -------------------
-We have studied the patterns of crime in L.A in three different aspects. From the demographic point of view, we have information about the characteristics of people that are most likely to be a victim:at a young age, females are more possible than male to be involved in a crime. Also, hispanic people has the highest proportion in the number of victims. Hispanic young woman around 25 years old are the most dangerous group in L.A according to the analysis into the data. In addition, Male vitims in crimes like burglary and assault are higher than female while female victims account for a larger part in battery and other sexual offences.Secondly, looking into the crime-prone areas in L.A,
+We have studied the patterns of crime in L.A. in three different aspects. From the demographic point of view, we have information about the characteristics of people that are most likely to be a victim:at a young age, females are more possible than male to be involved in a crime. Also, hispanic people has the highest proportion in the number of victims. Hispanic young woman around 25 years old are the most dangerous group in L.A. according to the analysis into the data. In addition, Male vitims in crimes like burglary and assault are higher than female while female victims account for a larger part in battery and other sexual offences.Secondly, looking into the crime-prone areas in L.A.,
 we found that 
 
 Why is this interesting?
 -------------------
-With the information extracted from the L.A crime dataset,it is possible to provide useful suggestions for LA police in order to reduce the number of either citizens or tourists of L.A from being hurt.In addition,we are interested in the general pattern of crime and curious about what will happen in the future.Thus,a prediction of the crime based on the recent dataset is crucial for the future crime prevention.
+With the information extracted from the L.A. crime dataset,it is possible to provide useful suggestions for LA police in order to reduce the number of either citizens or tourists of L.A. from being hurt.In addition,we are interested in the general pattern of crime and curious about what will happen in the future.Thus,a prediction of the crime based on the recent dataset is crucial for the future crime prevention.
 Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	

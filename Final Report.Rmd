@@ -51,7 +51,7 @@ The dataset contains information on crime incidents in Los Angeles. The source d
 Two separate csv files are provided with  Crime_Data_2010_2017  containing the main data and MO_Codes containing the description of MO codes that are included in the crime data for classification. 
 The dataset is made up of 1.584.316 observations and 26 variables. To structure the variables, we split them into four groups: demographic, geographic, crime and time type variables. Demographic category consists of the victims age, sex and descent. The type of variables and a detailed description can be found in the table below: 
 
-:Demographics
+_Demographics_
 
 | Variable      |    Type     |   Description      |
 | ------------- | ----------- | :---------------------------------------------------      |
@@ -63,7 +63,7 @@ The dataset is made up of 1.584.316 observations and 26 variables. To structure 
 
 The geographical category contains variables relating to the geographical occurrence of crime and reporting of crimes. Variables include the area ID, the name of the area, the district reporting the crime, the premise code, a premise description, the address, the cross street of rounded address and the location where the crime occurred. The type of variables and a detailed description can be found in the table below: 
 
-:Geographic
+_Geographic_
 
 | Variable            |    Type     |   Description      |
 | -------------       | ------------- | :-------------------------------------------------      |
@@ -79,7 +79,7 @@ The geographical category contains variables relating to the geographical occurr
 
 The crime category contains all variables that describe the incidents of crime in more detail such as the type of crime, the weapons used or the current status of the crime. The variables we assorted to this category include the number of the crime on record, the weapons used and their description, the status of the crime (code and description), then crime codes and their description as well as the modus operandi associated with the suspect in commission of the crime.
 
-:Crime
+_Crime_
 
 | Variable       |    Type     |   Description      |
 | ------------- | -------------   | :------------------------------------------------------------------------      |
@@ -100,7 +100,7 @@ The crime category contains all variables that describe the incidents of crime i
 
 The final category groups all variables related to time. It contains a variable that contains the reported date, the date and time occurrence.
 
-:Time
+_Time_
 
 | Variable      |    Type         |   Description  |
 | ------------- | -------------   | :------------------------     |
@@ -108,9 +108,10 @@ The final category groups all variables related to time. It contains a variable 
 | Date.Occurred |    fctr    |   MM/DD/YYYY   |
 | Time.Occurred |      int     |    In 24 hour military time.   |
 
-:Strengths and Weaknesses of Dataset
+Strengths and Weaknesses of Dataset
+-------------------
 
-Strengths:
+### Strengths:
 
 1. Large number of observations 
 
@@ -120,7 +121,7 @@ The dataset is comprehensive and documents criminal activities in L.A. from 2010
 
 We can conduct analysis on different areas with respect to crime in L.A with the data that we have. The data collected was extensive and detailed, with information on demographics, type of crime, and timings amongst other things. This will again allow us to study and identify interesting patterns with regards to criminal activities in L.A. 
 
-Weaknesses:
+### Weaknesses:
 1. Lack of socio-economic information
 
 While the dataset was comprehensive, it did not contain information on the socio-economic status of victims or perpetrators of crimes. Having such information will allow us to make more interesting inferences on likely victims of crime and also the type of crime committed. It is highly likely that socio-economic information will be as powerful as demographics, if not more powerful, in predicting criminal activities. 
@@ -130,7 +131,7 @@ While the dataset was comprehensive, it did not contain information on the socio
 The classification of types of crime in the dataset was messy and was not conducive for analysis, making it difficult to study the correlation between types of crime being committed and other variables such as area and demographics. This is because the crime description in the original dataset differs even for crimes that are broadly similar in nature. We thus have to go through the dataset and make classifications that are logical and at the same time, conducive for analysis. 
 
 Data Cleaning Description
-=========================
+-------------------
 As the data is provided in two different csv files. The first step that we took was to merge the crime_data and code_data into one single dataset. Then we looked at the date columns (date occured and date reported) and reformated each date to three new columns. Thus creating a new colum for the day occured, month occured and year occured as well as day reported, month reported and year reported. 
 For the completeness of full information on every year, we have omitted data from the year 2017 and will focus on the data from 2010 to 2016 included. 
 
@@ -140,7 +141,7 @@ In order to make an interesting analysis we wanted to work with the information 
 As there were some very specific subcategories for America (such as Alaskan Native)  we also added an additional more global column on victim descent to be able to work with both the more detailed descent information and the more global descent variables. We reduced the global descent column to contain six groups:
 
 
-:Victim Descent
+_Victim Descent_
 
 | Victim Descent Global Variables |
 | ------------- |
@@ -156,8 +157,6 @@ In order to simplify the mapping of location information, we also extracted long
 The data also covers and categorizes different types of crime in extensive detail. In order to extract valuable insights, we simplified the crime type variables by grouping them into more general categories. This reduced the 135 variables to sixteen more general variables. 
 
 As we put the focus of our analysis on understanding Los Angeles' victim profiles we decided not to use the data that is provided on crime suspects. 
-
-
 
 
 

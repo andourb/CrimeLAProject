@@ -151,7 +151,7 @@ The data covers the 21 different areas of Los Angeles and categorizes 135 differ
 Demographic
 =====================
 
-_Text here_
+_Firstly,we want to find out what kind of people are more likely to be a victim of crime and thus look at some demographic variables such as age,sex and ethnicity._
 
 Age and sex distribution
 -------------------
@@ -168,20 +168,14 @@ library(scales)
 
 ```
 
+Here we begin with a summary of the age among all victims.The summary of the victim age shows the youngest victim is only 10 years old and the oldest being 99 years old. The mean age of victim is around 36 years old. 
 ```{r , echo=FALSE}
 
 ##distribution of age among all victims
 summary(crime_data$Victim.Age,na.rm=TRUE)
-ggplot(crime_data,aes(x=Victim.Age,na.rm=TRUE))+geom_density()
-
-#can choose either one below(haven't decided yet)
-#plot option 1:
-crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
-ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
-
 ```
-The summary of the victim age shows the youngest victim is only 10 years old and the oldest being 99 years old.The mean age of victim is around 36 years old.From the density plot of victim age,we can see that there are two peak points at 
-14 and 25 respectively.In addition,a histogram plot of the victim age of male and female is shown above.From the overlapping pattern,it is obvious that male are more likely to be a victim of crime at a young age(10-15 years old) or from 40 to 70 years old while female tend to be more in danger between around 15 to 35 years old,especially aged between 18 and 25.For example,at age 25,number of female victims are approximately 7500 higher than male victims.
+
+Typically the age pattern of victims between male and female are not the same.We then construct a summary for male and female respectively and a histogram plot to see if it is the case.
 
 ```{r}
 #summary of female age and male age respectively
@@ -189,22 +183,33 @@ female_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="F"]
 male_age<-crime_data$Victim.Age[crime_data$Victim.Sex=="M"]
 summary(female_age,na.rm=TRUE)
 summary(male_age,na.rm=TRUE)
+#plot
+crime_data%>%filter(Victim.Sex=="F"|Victim.Sex=="M")%>%
+ggplot(aes(x=Victim.Age,fill=Victim.Sex)) + geom_histogram(binwidth = 1,position="dodge")
 
 ```
+
+The minimum and maximum of victim age are the same for both sex. However,the female victim age is smaller(37.52 years old) on average than for male(38.72 years old).
+From the overlapping pattern of the histogram plot above, it is obvious that male are more likely to be a victim of crime at a young age(10-15 years old) or from 40 to 70 years old while female tend to be more in danger between around 15 to 35 years old, especially aged between 18 and 25. For example, at age 25,number of female victims are approximately 7500 higher than male victims.
+
+
 _Hypothesis testing_
+
+As we have seen a different pattern in the victim age for male and female above, we want to use student t-test to check if the difference exists statistcally or is due to random variation. 
+
 ```{r , echo=FALSE}
 # Code here
 t.test(female_age,male_age,alternative = "two.sided")
 
 ```
-_Text here_
-From the summary of both male and female,the mean age of victim is lower for female(37.52 years old).We want to see whether this difference in mean age is due to random variation.A t-test is conducted to find out the results.Based on the t-test,we can conclude that there is strong evidence in rejecting the null hypothesis that the difference in means is 0.Thus,mean age of victim is significantly smaller for female.
 
-
+A t-test is conducted build on the null hypothesis that there is no significant difference in the mean victim age between male and female.Based on the t-test,a p-value of less than 2.2e-16 is really low and we can conclude that there is strong evidence in rejecting the null hypothesis that the difference in means is 0.Thus,mean age of victim is significantly smaller for female.
 
 
 Ethnicity
 -------------------
+
+Now that we have some clue about the relationship between age and gender,we want to dig more by adding another ethnicity variable.Below is a boxplot of victim age of male and female based on different ethnicity.
 
 ```{r , echo=FALSE}
 #average age of victims based on ethnicity and gender(Hispanic has the lowerst avg age)
@@ -216,43 +221,29 @@ avg_age<-crime_data%>%
   arrange(avg_age)
 
 #option1:barchart of mean age between different Ethnicity
-ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
+#ggplot(avg_age,aes(x=Victim.Descent.Global,y=avg_age,fill=Victim.Sex))+geom_bar(stat = 'identity', position = 'dodge')+labs(x="race of victim",y="average age of victim")
 
-#option2:boxplot of age between different Ethnicity
+#option2:boxplot of age between different Ethnicity(chosen)
 crime_data%>%
   filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
   ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=Victim.Descent.Global))+geom_boxplot()
 ```
-From the bar chart of average victim age based on ethnicity and gender,Hispanic have the lowest average age among all ethnicity groups and female Hispanic is the lowest(around 33 years old).For Blacks and Hispanic,female victim tends to be younger on average while it is not that obvious for other ethinicty groups.We want to carry out hypothesis testing to determine whether it is indeed the case according to the plot.
+From the boxplot based on ethnicity and gender,Hispanic have the lowest median age among all ethnicity groups and female Hispanic is the lowest(around 33 years old).For Blacks and Hispanic,female victim tends to be younger while it is not that obvious for other ethinicty groups.
+
+We also have a histogram plot of victims counts with different gender and ethnicity below.
 
 ```{r}
 #number of vitims with different gender and ethnicity
 crime_data%>%
   filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
-  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar()+facet_wrap(~Victim.Descent.Global)+
+  ggplot(aes(x=Victim.Age,fill=Victim.Sex,  na.rm=TRUE)) + geom_bar(position="dodge")+facet_wrap(~Victim.Descent.Global)+
   labs(x="Victime Age",y="Number of victims")
 ```
-From the above plot,it is obvious that Hispanic account for the largest part of victims and we would like to focus on Hispanic victims.
+From the above plot,it is obvious that Hispanic account for the largest part of victims,followed by black and white victims. Also,there are observable difference in the age distribution between male and female for the three ethnicity group.
 
 
-```{r}
-#Thus focus on Hispanic
-demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
- filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
-         Victim.Sex=="F"|Victim.Sex=="M")%>%
-  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
-  summarise(count = n())
-
-Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
-
-ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
-  geom_bar(stat = 'identity', position = 'dodge')    
-```
-
-_Text here_
-We now have some clue in the most likely victim of a crime:Hispanic young female aged aroung 25 years old.
 _Hypothesis testing_
-
+We want to carry out hypothesis testing to determine whether it is indeed the case according to the plot.
 ```{r}
 Hispanic_female1<-crime_data%>%filter(Victim.Descent.Global=="Hispanic")
 Hispanic_female<-Hispanic_female1$Victim.Age[Hispanic_female1$Victim.Sex=="F"]
@@ -277,8 +268,6 @@ t.test(white_female,white_male,alternative = "two.sided")
 From the t-tests above,female Hispanic victims are around 6 years younger on average than male Hispanic victims.For black people,female victims are around 3 years younger on average than male victims.However,as for white people,the average age is approximately the same(with a difference of between 0.02 to 0.25).
 
 ```{r , echo=FALSE}
-# Code here
-#
 crime_data1<-filter(crime_data,!crime_data$Victim.Descent=="")
 sum(crime_data1$Victim.Descent.Global=="White")/nrow(crime_data1)
 sum(crime_data1$Victim.Descent.Global=="Black")/nrow(crime_data1)
@@ -289,13 +278,30 @@ We did a proportion comparison with real population data.According to the popula
 
 
 
+```{r}
+#Thus focus on Hispanic
+#demographic <- crime_data %>% select(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+# filter( !is.na(Victim.Age),!Victim.Descent.Global=="-",!Victim.Descent.Global=="",
+#         Victim.Sex=="F"|Victim.Sex=="M")%>%
+#  group_by(Victim.Age, Victim.Descent.Global, Victim.Sex) %>% 
+#  summarise(count = n())
 
-Correlation between type of crime and age/sex/ethnicity (PLOT + hypothesis Testing !)
--------------------
+#Hispanic <- filter(demographic,  Victim.Descent.Global== "Hispanic")
+
+#ggplot(Hispanic, aes(x = Victim.Age, y = count, fill = as.factor(Victim.Sex))) + 
+#  geom_bar(stat = 'identity', position = 'dodge')    
+```
+
+_summary_
+
+From the demographic analysis carried out so far,we found that people with certain demographic characteristics are more likely to be a victim of crime. For example,Hispanic young female aged aroung 25 years old are more likely to become crime victim.
+
+
 
 
 relationship with type of crime
 -------------------
+As we now have some understanding on the victim information,we want to find out whether the characteristics of victims  differs in different types of crime.
 ```{r , echo=FALSE}
 #type of crime with gender
 type<-crime_data%>%select(crime_type,Victim.Sex,Victim.Age)%>%
@@ -317,6 +323,7 @@ crime_data%>%
   ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
 
 ```
+
 
 
 Area distribution

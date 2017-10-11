@@ -777,7 +777,7 @@ Help LA police, predict the crime, prevention for the potential victims
 
 What would be the next steps?	
 -------------------
-
+In this paper, we focus on the victim of crime in order to help prevent certain crimes. The next step could be carrying out investigation in the suspect of crime to help police find suspects and solve crime more efficiently.  
 crime type prediction
 area crime prediction
 suspect

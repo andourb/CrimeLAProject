@@ -86,8 +86,8 @@ The crime category contains all variables that describe the incidents of crime i
 
 _Crime_
 
-| Variable       |    Type     |   Description      |
-| ------------- | -------------   | :------------------------------------------------------------------------      |
+| Variable                     |    Type     |   Description      |
+| ---------------------------- | -------------   | :------------------------------------------------------------------------      |
 |  DR.Number        |      int   |    Division of Records Number: Official file number made up of a 2 digit year, area ID, and 5 digits       |
 |  Weapon.Used.Code |     dbl    |   The type of weapon used in the crime.        |
 |  Weapon.Description|  fctr     |    Defines the Weapon Used Code provided.       |

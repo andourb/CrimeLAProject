@@ -349,16 +349,8 @@ ggplot(type, aes(x =crime_type , y= count,fill=Victim.Sex)) + geom_bar(position 
 ```
 From the barplot on crime type above, burglary, battery, assault and vandalism are the most likely crime types. Burglary and assault tend to be aimed more at male while battery and other sexual offences have more female victims.
 
-```{r}
-#boxplot of victim age between different type of crimes and gender
-#crime_data%>%
-#  filter(Victim.Sex=="F"|Victim.Sex=="M",!Victim.Descent.Global=="-",!Victim.Descent.Global=="")%>%
-#  group_by(crime_type,Victim.Sex)%>%
-  
-#  ggplot(aes(x=Victim.Sex,y=Victim.Age,fill=crime_type))+geom_boxplot()
-
-```
 We are also interested in the pattern of crime types with different ethnicity. Overall, burglary/theft occurs most frequently for all ethnicity groups.The burglary/theft proportion is the lowest for black victims. As for the proportion of assault and battery,  Asians, White, Asian, Pacific Islanders share similar proportion pattern whereas Black and Hispanic people have higher proportion in this two crime types.
+
 ```{r}
 crime_data %>% filter(!Victim.Descent.Global=="-",!Victim.Descent.Global==" ") %>% ggplot(aes(x=Victim.Descent.Global, fill=crime_type))+ geom_bar(position='fill') + labs(x="Victim's Ethnicity", y= "Proportion of Crimes")
 ```
@@ -396,10 +388,11 @@ chisq.test(tbl)
 
 As the p-value is lower than the .05 significance level, we reject the null hypothesis that the crime area is independent of the type of a crime.
 
-Another way to address the problem is to look at the crime density for different type of crime in Los Angeles.
 
 Area distrubution per type of crime 
 -------------------
+
+Another way to address the problem is to look at the crime density for different type of crime in Los Angeles.
 
 ```{r, fig.height=10, fig.width=7, message=FALSE, warning=FALSE}
 
